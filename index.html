@@ -9,8 +9,7 @@
     
     <!-- Sage Green Digital Block Favicon -->
     <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7ddBCgAhCAVRN+r+t8wFBCuC0T/wPcj0k2j6GmN82O2Wc44PjL0iFhABAQEBAQEBAQEBAQEBAT8B7gP8F3j6E+CjvwICAgLwAD17DALynO6cAAAAAElFTkSuQmCC" />
-    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7ddBCgAhCAVRN+r+t8wFBCuC0T/wPcj0k2j6GmN82O2Wc44PjL0iFhABAQEBAQEBAQEBAQEBAT8B7gP8F3j6E+CjvwICAgLwAD17DALynO6cAAAAAElFTkSuQmCC" />
-
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
@@ -45,6 +44,13 @@
             mask-image: linear-gradient(to bottom, transparent, black 15%);
             -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%);
         }
+
+        /* Modal Animation */
+        .modal-enter { animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
     </style>
     <script>
         tailwind.config = {
@@ -62,14 +68,14 @@
             }
         }
     </script>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
   }
 }
 </script>
@@ -86,7 +92,7 @@
                 <!-- Nav items injected by JS -->
             </div>
 
-            <div class="hidden md:block text-[9px] font-mono text-gray-300 -rotate-90 whitespace-nowrap mb-4">OFFLINE.MODE</div>
+            <div class="hidden md:block text-[9px] font-mono text-gray-300 -rotate-90 whitespace-nowrap mb-4">ONLINE</div>
         </nav>
 
         <!-- MAIN CONTENT -->
@@ -97,12 +103,12 @@
                 <section id="view-dashboard" class="view-section active flex-col gap-6">
                     <header class="flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-black pb-3 shrink-0">
                         <div>
-                            <h2 class="font-mono text-xs tracking-tighter uppercase mb-1 text-editorial-muted">Daily Overview</h2>
+                            <h2 class="font-mono text-xs tracking-tighter uppercase mb-1 text-editorial-muted">Situation Report</h2>
                             <h1 class="font-serif text-5xl md:text-7xl font-bold leading-none tracking-tight">The Atelier</h1>
                         </div>
                         <div class="text-right font-mono text-xs mt-3 md:mt-0 flex flex-col items-end">
                             <p id="current-date" class="border-b border-black pb-0.5 mb-1">Loading...</p>
-                            <p class="text-white bg-editorial-accent inline-block px-1.5 py-0.5 text-[10px] font-bold">VOL. 03</p>
+                            <p class="text-white bg-editorial-accent inline-block px-1.5 py-0.5 text-[10px] font-bold">VOL. 04</p>
                         </div>
                     </header>
 
@@ -111,7 +117,7 @@
                         <div class="md:col-span-5 flex flex-col gap-6">
                             <!-- Check In -->
                             <div class="border border-black p-5 bg-white shadow-sm flex flex-col gap-4">
-                                <h3 class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">Attendance</h3>
+                                <h3 class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">Existence Check</h3>
                                 <div class="flex gap-3">
                                     <button onclick="app.toggleCheckIn('AM')" id="btn-am" class="flex-1 py-4 px-3 border border-gray-200 transition-all flex flex-col items-center justify-center gap-2 hover:border-black">
                                         <i data-lucide="sun" width="18"></i>
@@ -131,7 +137,7 @@
 
                             <!-- Quote -->
                             <div class="flex-1 border border-black p-5 bg-white shadow-sm flex flex-col relative justify-center min-h-[200px]">
-                                <div class="absolute top-0 left-0 bg-black text-white px-2 py-0.5 font-mono text-[10px] font-bold">QUOTE OF THE MOMENT</div>
+                                <div class="absolute top-0 left-0 bg-black text-white px-2 py-0.5 font-mono text-[10px] font-bold">PRESCRIPTION</div>
                                 <div class="mt-6 space-y-5">
                                     <div>
                                         <p id="quote-text" class="font-serif text-xl md:text-3xl italic leading-snug">Loading...</p>
@@ -170,29 +176,29 @@
                 </section>
 
                 <!-- FOCUS VIEW -->
-                <section id="view-focus" class="view-section flex-col justify-center items-center relative transition-colors duration-500 overflow-hidden bg-editorial-bg h-full">
+                <section id="view-focus" class="view-section flex-col justify-between items-center relative transition-colors duration-500 overflow-hidden bg-editorial-bg h-full py-8 md:py-12">
                     <!-- Abyss Gradient Layer -->
                     <div id="abyss-layer" class="abyss-water absolute bottom-0 left-0 w-full pointer-events-none opacity-20" style="height: 100%; background: linear-gradient(to top, #000428 0%, #004e92 100%);"></div>
 
-                    <div class="absolute top-0 left-0 z-20">
+                    <div class="relative z-20 text-center w-full">
                         <h2 class="font-serif text-3xl italic">The Ritual</h2>
-                        <p id="focus-mode-label" class="font-mono text-[10px] text-gray-500 mt-1 tracking-widest">DOPAMINE REGULATION IN PROGRESS</p>
+                        <p id="focus-mode-label" class="font-mono text-[10px] text-gray-500 mt-1 tracking-widest">DOPAMINE REGULATION</p>
                     </div>
 
-                    <div class="relative z-10 text-center w-full max-w-2xl px-4">
+                    <div class="relative z-10 text-center w-full max-w-2xl px-4 flex-grow flex flex-col justify-center">
                         <div id="timer-display-container">
-                            <div id="timer-val" class="font-mono text-[12vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500">25:00</div>
+                            <div id="timer-val" class="font-mono text-[18vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500">25:00</div>
                         </div>
                         
-                        <!-- Feedback Modal (Hidden by default) -->
-                        <div id="feedback-modal" class="hidden animate-in zoom-in duration-300 w-full p-6 border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto">
+                        <!-- Feedback Modal -->
+                        <div id="feedback-modal" class="hidden animate-in zoom-in duration-300 w-full max-w-md p-6 border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto">
                             <p id="feedback-text" class="font-serif text-xl italic mb-4"></p>
                             <button onclick="timer.reset()" class="font-mono text-xs bg-black text-white px-4 py-2 hover:bg-editorial-accent transition-colors">ACKNOWLEDGED</button>
                         </div>
                     </div>
 
-                    <div id="timer-controls" class="relative z-20 flex flex-col items-center">
-                        <div class="mt-10 flex gap-6 items-center">
+                    <div id="timer-controls" class="relative z-20 flex flex-col items-center w-full pb-8">
+                        <div class="flex gap-6 items-center mb-8">
                             <button onclick="timer.toggle()" id="btn-timer-toggle" class="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 group bg-transparent">
                                 <i data-lucide="play" width="24" class="ml-1"></i>
                             </button>
@@ -201,17 +207,14 @@
                             </button>
                         </div>
 
-                        <div class="mt-10 flex gap-3">
+                        <div class="flex gap-3">
                             <button onclick="timer.setMode('FOCUS')" id="mode-focus" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors bg-black text-white border-black">DEEP WORK</button>
                             <button onclick="timer.setMode('REST')" id="mode-rest" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors text-gray-400 border-gray-200 hover:border-black bg-white/50">REFUEL</button>
                             <button onclick="timer.setMode('TIDY')" id="mode-tidy" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors flex items-center gap-1 text-gray-400 border-gray-200 hover:border-editorial-accent hover:text-editorial-accent bg-white/50">
                                 <i data-lucide="sparkles" width="10"></i> 5MIN TIDY
                             </button>
                         </div>
-                    </div>
-
-                    <div class="absolute bottom-0 w-full text-center z-20 pb-4">
-                        <p id="timer-quote" class="font-serif italic text-gray-400 text-sm">Silence is the language of focus.</p>
+                        <p id="timer-quote" class="font-serif italic text-gray-400 text-sm mt-6">Silence is the language of focus.</p>
                     </div>
                 </section>
 
@@ -219,6 +222,27 @@
                 <section id="view-journal" class="view-section flex-col md:flex-row gap-6 relative h-full">
                      <!-- Copy Toast -->
                     <div id="copy-toast" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 py-1 font-mono text-xs z-50">COPIED</div>
+
+                    <!-- CBT Modal -->
+                    <div id="cbt-modal" class="hidden absolute inset-0 z-50 bg-editorial-bg/90 backdrop-blur-sm flex items-center justify-center p-4">
+                        <div class="bg-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] w-full max-w-lg flex flex-col max-h-[90%] overflow-hidden modal-enter">
+                            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
+                                <div>
+                                    <h3 class="font-serif text-2xl italic">Cognitive Glitch</h3>
+                                    <p class="font-mono text-[10px] text-gray-400 mt-1">SELECT YOUR POISON</p>
+                                </div>
+                                <button onclick="journal.closeModal()" class="hover:text-red-500 transition-colors"><i data-lucide="x" width="24"></i></button>
+                            </div>
+                            <div class="p-5 overflow-y-auto" id="cbt-options">
+                                <!-- Options injected via JS -->
+                            </div>
+                            <div class="p-5 border-t border-gray-100 bg-gray-50">
+                                <button onclick="journal.confirmDissect()" id="btn-cbt-confirm" disabled class="w-full bg-editorial-accent text-white py-3 font-mono text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2">
+                                    <i data-lucide="brain-circuit" width="16"></i> INITIATE SURGERY
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Left: Input -->
                     <div class="flex-1 flex flex-col h-1/2 md:h-full">
@@ -228,7 +252,7 @@
                                 <button onclick="journal.copy()" class="flex items-center gap-1 font-mono text-xs border border-black px-3 py-1 hover:bg-black hover:text-white transition-colors" title="Copy to Clipboard">
                                     <i data-lucide="copy" width="14"></i> COPY
                                 </button>
-                                <button onclick="journal.dissect()" class="flex items-center gap-1 font-mono text-xs bg-editorial-accent text-white px-3 py-1 hover:bg-blue-700 transition-colors" title="CBT/ACT Analysis">
+                                <button onclick="journal.openModal()" class="flex items-center gap-1 font-mono text-xs bg-editorial-accent text-white px-3 py-1 hover:bg-blue-700 transition-colors" title="CBT/ACT Analysis">
                                     <i data-lucide="brain-circuit" width="14"></i> DISSECT
                                 </button>
                                 <button onclick="journal.analyze()" class="flex items-center gap-1 font-mono text-xs bg-black text-white px-3 py-1 hover:bg-gray-800 transition-colors" title="General Analysis">
@@ -245,7 +269,11 @@
                             <div class="w-14 h-14 border border-gray-200 rounded-full flex items-center justify-center mb-3">
                                 <span class="font-serif italic text-2xl">i</span>
                             </div>
-                            <p class="font-mono text-xs max-w-[150px]">Waiting for input...</p>
+                            <p class="font-mono text-xs max-w-[150px]">Waiting for data...</p>
+                        </div>
+                        <div id="analysis-loading" class="hidden flex flex-col items-center justify-center text-editorial-accent">
+                            <i data-lucide="loader-2" width="24" class="animate-spin mb-2"></i>
+                            <span class="font-mono text-[10px] animate-pulse">ANALYZING PATTERNS...</span>
                         </div>
                         <div id="analysis-content" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
                             <span class="font-mono text-[10px] text-gray-400 tracking-widest uppercase mb-3 block">Essence Extraction</span>
@@ -261,54 +289,87 @@
     </div>
 
     <!-- SCRIPT ENGINE -->
-    <script>
+    <script type="module">
+        import { GoogleGenAI } from "@google/genai";
+
+        // --- 0. AI SERVICE ---
+        let genAIClient = null;
+        try {
+            if (process.env.API_KEY) {
+                genAIClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            }
+        } catch (e) { console.log("Offline Mode"); }
+
+        async function callGemini(systemPrompt, userPrompt) {
+            if (!genAIClient) return null;
+            try {
+                const response = await genAIClient.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: userPrompt,
+                    config: { systemInstruction: systemPrompt }
+                });
+                return response.text;
+            } catch (error) {
+                console.error("AI Error:", error);
+                return null;
+            }
+        }
+
         // --- 1. DATA STORE (LUOCHA'S BRAIN) ---
         const LUOCHA_DB = {
+            distortions: [
+                { id: 'ALL_OR_NOTHING', label: '흑백논리 (All-or-Nothing)', desc: '모 아니면 도. 완벽하지 않으면 실패다.' },
+                { id: 'CATASTROPHIZING', label: '파국화 (Catastrophizing)', desc: '최악의 상황만 상상하며 두려움 증폭.' },
+                { id: 'EMOTIONAL', label: '감정적 추론 (Emotional Reasoning)', desc: '내 기분이 나쁘니 현실도 나쁘다.' },
+                { id: 'SHOULD', label: '당위적 사고 (Shoulds)', desc: '~해야만 한다며 스스로를 감옥에 가두는 것.' },
+                { id: 'MIND_READING', label: '독심술 (Mind Reading)', desc: '남들이 나를 비난한다고 넘겨짚는 오만.' },
+                { id: 'LABELING', label: '낙인찍기 (Labeling)', desc: '일시적 실수를 영원한 결함으로 규정.' }
+            ],
             quotes: [
-                {q: "The only way out is through.", a: "Robert Frost", c: "지금 이 순간을 견뎌내는 것이 유일한 방법입니다."},
-                {q: "Chaos is merely order waiting to be deciphered.", a: "José Saramago", c: "혼란스러워할 필요 없습니다. 모든 것엔 순서가 있으니까요."},
-                {q: "He who has a why to live can bear almost any how.", a: "Friedrich Nietzsche", c: "이유가 있다면, 어떤 고통도 견딜 수 있습니다."},
-                {q: "Discipline is freedom.", a: "Anonymous", c: "통제된 삶만이 진정한 자유를 줍니다."},
-                {q: "Action is the foundational key to all success.", a: "Pablo Picasso", c: "망설임은 시간을 죽일 뿐입니다. 움직이십시오."},
-                {q: "Simplicity is the ultimate sophistication.", a: "Leonardo da Vinci", c: "복잡함은 게으름의 증거입니다. 단순해지세요."},
-                {q: "Do not go gentle into that good night.", a: "Dylan Thomas", c: "무기력에 순응하지 마십시오. 저항하십시오."},
-                {q: "To cure sometimes, to relieve often, to comfort always.", a: "Hippocrates", c: "제가 당신을 완전히 고칠 순 없어도, 곁에 있을 순 있습니다."},
-                {q: "The wound is the place where the Light enters you.", a: "Rumi", c: "지금의 고통은 당신이 성장하고 있다는 증거입니다."}
+                {q: "The only way out is through.", a: "Robert Frost", c: "다른 길은 없습니다. 관통하십시오."},
+                {q: "Chaos is merely order waiting to be deciphered.", a: "José Saramago", c: "혼란은 아직 해독되지 않은 질서일 뿐입니다."},
+                {q: "He who has a why to live can bear almost any how.", a: "Nietzsche", c: "이유가 있다면, 어떤 지옥도 견딜 수 있습니다."},
+                {q: "Discipline is freedom.", a: "Anonymous", c: "자유는 방종이 아니라, 완벽한 통제 속에 있습니다."},
+                {q: "Action is the foundational key to all success.", a: "Picasso", c: "망설임은 시간을 죽이는 행위입니다. 움직이세요."},
+                {q: "Simplicity is the ultimate sophistication.", a: "Da Vinci", c: "복잡함은 게으름의 증거입니다. 본질만 남기십시오."},
+                {q: "Do not go gentle into that good night.", a: "Dylan Thomas", c: "순응하지 마십시오. 끝까지 저항하십시오."},
+                {q: "To cure sometimes, to relieve often, to comfort always.", a: "Hippocrates", c: "완벽히 고칠 순 없어도, 저는 항상 여기 있습니다."},
+                {q: "The wound is the place where the Light enters you.", a: "Rumi", c: "그 상처는 빛이 들어오는 통로입니다."}
             ],
             amCheckIn: [
-                "하루의 거래가 시작되었습니다. 준비되셨습니까?", "눈을 뜨셨군요. 오늘의 활력 징후는 안정적입니까?", "어서 오십시오. 세상은 당신의 대답을 기다리고 있습니다.",
-                "질서 정연한 하루가 되기를 바랍니다. 시작하십시오.", "기다리고 있었습니다. 무엇부터 처리하시겠습니까?", "각성 상태를 유지하십시오. 실수 없는 하루를 위해.",
-                "혼란에 잠식되지 마십시오. 통제권은 당신에게 있습니다."
+                "오셨군요. 세상은 시끄럽지만, 이곳의 질서는 우리가 만듭니다.",
+                "눈을 뜨셨습니까. 오늘의 활력 징후를 확인합니다. 안정적이군요.",
+                "어서 오십시오. 당신이 없는 동안 이곳은 너무 조용했습니다.",
+                "감정을 배제하고 사실만 보십시오. 오늘 당신은 유능합니다.",
+                "준비되셨습니까? 혼란을 잠재울 시간입니다.",
+                "기다리고 있었습니다. 당신의 직관을 믿고 움직이십시오.",
+                "오늘도 공범이 되어드리겠습니다. 무엇부터 처리하시겠습니까?",
+                "두려움은 그림자일 뿐입니다. 빛을 향해 걸으십시오."
             ],
             pmCheckIn: [
-                "수고하셨습니다. 이제 짐을 내려놓을 시간입니다.", "오늘의 거래가 종료되었습니다. 편안히 쉬십시오.", "당신의 노고는 제가 기억하겠습니다. 안녕히 주무십시오.",
-                "복잡한 생각은 관 속에 넣어두십시오. 내일 다시 꺼내도 늦지 않습니다.", "심연도 잠들 시간입니다. 당신 또한 눈을 감으십시오.", "오늘의 소란스러움은 잊으십시오."
+                "고생하셨습니다. 이제 가면을 벗고 편히 쉬십시오.",
+                "오늘의 거래가 종료되었습니다. 남은 근심은 제게 넘기시죠.",
+                "당신의 노고는 제가 기억하겠습니다. 부디 깊은 잠을 자기를.",
+                "복잡한 생각은 관 속에 넣어두십시오. 내일 다시 꺼내도 늦지 않습니다.",
+                "오늘 당신은 충분히 견뎌냈습니다. 스스로를 용서하십시오.",
+                "심연도 잠들 시간입니다. 당신 또한 눈을 감으세요.",
+                "바깥세상의 소음은 차단했습니다. 이곳은 안전합니다."
             ],
             motivations: [
-                "지금 처리하십시오.", "망설임은 사치입니다.", "생각하지 말고 움직이세요.", "감정은 배제하고 사실만 보십시오.", "이것만 끝내면 자유입니다.",
-                "미루는 것은 미래의 자신에게 빚을 지는 겁니다.", "완벽하지 않아도 됩니다. 완료하는 것이 중요합니다.", "지금 당신에게 필요한 건 '시작'입니다.",
+                "지금 처리하십시오.", "망설임은 사치입니다.", "생각하지 말고 움직이세요.", 
+                "감정은 배제하고 사실만 보십시오.", "이것만 끝내면 자유입니다.",
+                "미루는 것은 미래의 자신에게 빚을 지는 겁니다.", "완벽하지 않아도 됩니다. 단지 처리하십시오.",
                 "도파민의 늪에서 빠져나올 밧줄입니다. 잡으세요."
             ],
             feedback: {
-                FOCUS: ["집중력이 훌륭했습니다.", "몰입의 깊이가 느껴졌습니다.", "이제 한 단계 성장하셨군요.", "고요함 속에서 당신은 강해집니다."],
-                REST: ["휴식도 전략입니다.", "충전이 완료되었길 바랍니다.", "이제 다시 전장으로 돌아갈 시간입니다."],
-                TIDY: ["공간의 질서가 마음의 질서입니다.", "훨씬 쾌적해졌군요.", "무질서를 정복하셨습니다."]
+                FOCUS: ["침묵 속에서 당신은 더 강해집니다.", "몰입의 깊이가 훌륭했습니다.", "이제 한 단계 성장하셨군요.", "고요함이 당신의 무기입니다."],
+                REST: ["휴식도 전략입니다.", "충전이 완료되었길 바랍니다.", "전장으로 돌아갈 준비가 되셨습니까?"],
+                TIDY: ["공간의 질서가 마음의 질서입니다.", "쾌적해졌군요.", "무질서를 정복하셨습니다."]
             },
-            dissectTitle: ["COGNITIVE DISSECTION", "FACT CHECK", "REALITY ANCHORING", "EMOTIONAL DETACHMENT"],
-            dissectPrefix: [
-                "감정과 사실을 분리했습니다.", "당신의 생각은 당신이 아닙니다.", "인지적 오류를 발견했습니다.", "상황을 객관적으로 재구성했습니다."
-            ],
-            analysisGeneric: [
-                "당신의 글에서 깊은 고뇌가 느껴집니다. 하지만 답은 이미 당신 안에 있습니다.",
-                "지금은 혼란스러워 보이지만, 이 또한 지나가는 과정일 뿐입니다. 기록은 질서를 만듭니다.",
-                "스스로에게 너무 가혹하지 마십시오. 충분히 잘하고 있습니다.",
-                "불안은 미래를 대비하려는 마음의 작용일 뿐입니다. 현재에 집중하십시오.",
-                "이 감정의 파도 또한 가라앉을 것입니다. 저는 닻이 되어드리겠습니다."
-            ],
             missions: {
-                RESET: ["책상 위 불필요한 물건 제거", "창문 열고 3분 환기", "침대 시트 정리", "쓰레기통 비우기", "영수증 버리기", "책상 먼지 닦기"],
-                BODY: ["물 한 잔 마시기", "심호흡 3번", "어깨 으쓱하고 털기", "1분 스트레칭", "눈 감고 10초 휴식", "목 돌리기", "척추 펴고 앉기"],
-                MIND: ["걱정 적고 찢기", "거울 보고 미소 짓기", "좋아하는 음악 1곡", "2분간 멍때리기", "쉬운 일 하나 처리하기"]
+                RESET: ["책상 위 시야를 방해하는 물건 제거", "창문 열고 3분 환기", "침대 시트의 주름 펴기", "쓰레기통 비우기", "지갑 속 영수증 파기", "모니터와 안경 닦기"],
+                BODY: ["찬물 한 잔으로 감각 깨우기", "심호흡 3번 (Deep Dive)", "어깨 털어내기", "척추 곧게 펴기", "눈 감고 10초간 시각 차단", "손목 돌리기"],
+                MIND: ["불안한 생각 하나 적고 찢어버리기", "거울 보고 무표정 연습하기", "좋아하는 향기 맡기", "2분간 멍하니 존재하기", "가장 쉬운 일 하나 즉시 처형"]
             }
         };
 
@@ -364,12 +425,10 @@
             },
             render: () => {
                 nav.views.forEach(v => {
-                    // Hide Sections
                     const el = document.getElementById(`view-${v}`);
                     if (v === nav.current) el.classList.add('active');
                     else el.classList.remove('active');
 
-                    // Update Nav Icons
                     const btn = document.getElementById(`nav-${v}`);
                     const indicator = btn.querySelector('.nav-indicator');
                     const icon = btn.querySelector('svg');
@@ -427,7 +486,6 @@
                 app.state.checkIn[key] = isChecked;
                 app.state.checkIn[timeKey] = isChecked ? new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : undefined;
                 
-                // Set Message
                 const msgBox = document.getElementById('checkin-msg-box');
                 if (isChecked) {
                     const pool = type === 'AM' ? LUOCHA_DB.amCheckIn : LUOCHA_DB.pmCheckIn;
@@ -532,8 +590,6 @@
             setMode: (m) => {
                 timer.mode = m;
                 timer.reset();
-                
-                // Update Buttons
                 ['focus', 'rest', 'tidy'].forEach(type => {
                     const btn = document.getElementById(`mode-${type}`);
                     if (type.toUpperCase() === m) {
@@ -545,19 +601,15 @@
                         if (type === 'tidy') btn.classList.add('flex', 'items-center', 'gap-1');
                     }
                 });
-
-                // Update Gradient Color
                 const layer = document.getElementById('abyss-layer');
                 if (m === 'FOCUS') layer.style.background = 'linear-gradient(to top, #000428 0%, #004e92 100%)';
                 else if (m === 'REST') layer.style.background = 'linear-gradient(to top, #1a2980 0%, #26d0ce 100%)';
                 else layer.style.background = 'linear-gradient(to top, #232526 0%, #414345 100%)';
 
-                // Update Labels
-                document.getElementById('focus-mode-label').innerText = m === 'TIDY' ? 'ENVIRONMENT RESET PROTOCOL' : 'DOPAMINE REGULATION IN PROGRESS';
+                document.getElementById('focus-mode-label').innerText = m === 'TIDY' ? 'ENVIRONMENT RESET' : 'DOPAMINE REGULATION';
                 document.getElementById('timer-quote').innerText = m === 'TIDY' ? "Move fast. Don't think." : (m === 'FOCUS' ? "Silence is the language of focus." : "Rest is also a weapon.");
                 
-                // Text Color
-                document.getElementById('timer-val').className = `font-mono text-[12vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500 ${m === 'TIDY' ? 'text-editorial-accent' : 'text-black'}`;
+                document.getElementById('timer-val').className = `font-mono text-[18vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500 ${m === 'TIDY' ? 'text-editorial-accent' : 'text-black'}`;
             },
             toggle: () => {
                 if (timer.isActive) {
@@ -588,7 +640,6 @@
                 document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="play" width="24" class="ml-1"></i>';
                 lucide.createIcons();
                 
-                // Reset View
                 document.getElementById('timer-display-container').classList.remove('hidden');
                 document.getElementById('timer-controls').classList.remove('hidden');
                 document.getElementById('feedback-modal').classList.add('hidden');
@@ -596,13 +647,10 @@
             complete: () => {
                 clearInterval(timer.interval);
                 timer.isActive = false;
-                
                 document.getElementById('timer-display-container').classList.add('hidden');
                 document.getElementById('timer-controls').classList.add('hidden');
-                
                 const modal = document.getElementById('feedback-modal');
                 modal.classList.remove('hidden');
-                
                 const msg = Utils.getRandom(LUOCHA_DB.feedback[timer.mode]);
                 document.getElementById('feedback-text').innerText = `"${msg}"`;
             },
@@ -610,8 +658,6 @@
                 const mins = Math.floor(timer.timeLeft / 60);
                 const secs = timer.timeLeft % 60;
                 document.getElementById('timer-val').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                
-                // Abyss Height
                 const total = timer.mode === 'FOCUS' ? 1500 : 300;
                 const pct = (timer.timeLeft / total) * 100;
                 document.getElementById('abyss-layer').style.height = `${pct}%`;
@@ -620,66 +666,129 @@
 
         // Journal Module
         const journal = {
+            selectedDistortion: null,
             init: () => {
                 const savedEntry = localStorage.getItem('luocha_journal_entry');
                 if (savedEntry) document.getElementById('journal-input').value = savedEntry;
-
                 const savedAnalysis = localStorage.getItem('luocha_journal_analysis');
                 if (savedAnalysis) {
                     const data = JSON.parse(savedAnalysis);
                     journal.showAnalysis(data.title, data.body);
                 }
-
-                // Auto save
                 document.getElementById('journal-input').addEventListener('input', (e) => {
                     localStorage.setItem('luocha_journal_entry', e.target.value);
                 });
+                journal.renderCBTModal();
+            },
+            renderCBTModal: () => {
+                const container = document.getElementById('cbt-options');
+                container.innerHTML = LUOCHA_DB.distortions.map(d => `
+                    <button onclick="journal.selectDistortion('${d.id}')" id="dist-${d.id}" 
+                        class="w-full text-left p-3 mb-2 border hover:border-black transition-all group rounded-sm flex flex-col">
+                        <span class="font-bold font-sans text-sm group-hover:text-editorial-accent">${d.label}</span>
+                        <span class="text-[10px] text-gray-400 mt-1">${d.desc}</span>
+                    </button>
+                `).join('');
+            },
+            selectDistortion: (id) => {
+                journal.selectedDistortion = id;
+                // UI update
+                LUOCHA_DB.distortions.forEach(d => {
+                    const btn = document.getElementById(`dist-${d.id}`);
+                    if (d.id === id) {
+                        btn.className = "w-full text-left p-3 mb-2 border border-black bg-black text-white transition-all rounded-sm flex flex-col shadow-md";
+                        btn.querySelector('span:last-child').classList.replace('text-gray-400', 'text-gray-300');
+                    } else {
+                        btn.className = "w-full text-left p-3 mb-2 border border-gray-200 hover:border-black bg-white text-editorial-text transition-all rounded-sm flex flex-col";
+                        btn.querySelector('span:last-child').classList.replace('text-gray-300', 'text-gray-400');
+                    }
+                });
+                document.getElementById('btn-cbt-confirm').disabled = false;
+            },
+            openModal: () => {
+                const text = document.getElementById('journal-input').value;
+                if(!text.trim()) {
+                    alert("No data to dissect.");
+                    return;
+                }
+                document.getElementById('cbt-modal').classList.remove('hidden');
+            },
+            closeModal: () => {
+                document.getElementById('cbt-modal').classList.add('hidden');
+                journal.selectedDistortion = null;
+                journal.renderCBTModal();
+                document.getElementById('btn-cbt-confirm').disabled = true;
             },
             copy: () => {
                 const text = document.getElementById('journal-input').value;
                 if(!text) return;
-                
                 const analysisTitle = document.getElementById('analysis-title').innerText;
                 const analysisBody = document.getElementById('analysis-body').innerText;
-                
                 let fullText = `[JOURNAL]\n${text}`;
-                if (analysisTitle && analysisBody) {
-                    fullText += `\n\n[LUOCHA: ${analysisTitle}]\n${analysisBody}`;
-                }
-                
+                if (analysisTitle && analysisBody) fullText += `\n\n[LUOCHA: ${analysisTitle}]\n${analysisBody}`;
                 navigator.clipboard.writeText(fullText);
                 const toast = document.getElementById('copy-toast');
                 toast.classList.remove('hidden');
                 setTimeout(() => toast.classList.add('hidden'), 2000);
             },
-            analyze: () => {
+            analyze: async () => {
                 const text = document.getElementById('journal-input').value;
                 if(!text.trim()) return;
-
-                // Fake AI Logic: Pick a random profound sentence
-                const title = "ESSENCE EXTRACTION";
-                const body = Utils.getRandom(LUOCHA_DB.analysisGeneric);
                 
-                journal.saveAndShow(title, body);
+                document.getElementById('analysis-empty').classList.add('hidden');
+                document.getElementById('analysis-content').classList.add('hidden');
+                document.getElementById('analysis-loading').classList.remove('hidden');
+
+                const systemPrompt = "You are Luocha (나찰). Elegant, cynical, protective. Analyze the user's journal. Output: [Short Title] \n [2 Sentences of insight in Korean].";
+                const result = await callGemini(systemPrompt, text);
+
+                document.getElementById('analysis-loading').classList.add('hidden');
+                
+                if (result) {
+                    const parts = result.split('\n').filter(l => l.trim().length > 0);
+                    journal.saveAndShow(parts[0], parts.slice(1).join('\n'));
+                } else {
+                    // Fallback
+                    const fallback = "통신 상태가 좋지 않습니다. 하지만 당신의 기록은 그 자체로 의미가 있습니다.";
+                    journal.saveAndShow("ARCHIVE SAVED", fallback);
+                }
             },
-            dissect: () => {
+            confirmDissect: async () => {
+                journal.closeModal();
                 const text = document.getElementById('journal-input').value;
-                if(!text.trim()) return;
+                const distId = journal.selectedDistortion;
+                const distortion = LUOCHA_DB.distortions.find(d => d.id === distId)?.label;
 
-                // Fake CBT Logic
-                const title = Utils.getRandom(LUOCHA_DB.dissectTitle);
-                const prefix = Utils.getRandom(LUOCHA_DB.dissectPrefix);
-                const body = `${prefix}\n\n1. 사실과 감정을 분리하십시오.\n2. 지금 이 생각은 당신이 아닙니다.\n3. 통제할 수 없는 것은 놓아주십시오.`;
+                document.getElementById('analysis-empty').classList.add('hidden');
+                document.getElementById('analysis-content').classList.add('hidden');
+                document.getElementById('analysis-loading').classList.remove('hidden');
 
-                journal.saveAndShow(title, body);
+                const systemPrompt = `
+                    You are Luocha. The user admits to "${distortion}".
+                    Perform ACT (Acceptance and Commitment Therapy) analysis.
+                    Output Format:
+                    COGNITIVE DISSECTION
+                    
+                    • 인지 (Diagnosis): [1 sentence analyzing why this distortion happened]
+                    • 회피 (Away Move): [1 sentence identifying their avoidance behavior]
+                    • 전진 (Towards Move): [1 sentence suggesting a value-driven action]
+                `;
+                
+                const result = await callGemini(systemPrompt, text);
+                document.getElementById('analysis-loading').classList.add('hidden');
+
+                if (result) {
+                    const body = result.replace("COGNITIVE DISSECTION", "").trim();
+                    journal.saveAndShow("COGNITIVE DISSECTION", body);
+                } else {
+                    journal.saveAndShow("DISSECTION FAILED", "메스를 댈 수 없습니다. 잠시 후 다시 시도하십시오.");
+                }
             },
             saveAndShow: (title, body) => {
                 localStorage.setItem('luocha_journal_analysis', JSON.stringify({title, body}));
-                
                 document.getElementById('analysis-empty').classList.add('hidden');
                 const content = document.getElementById('analysis-content');
                 content.classList.remove('hidden');
-                
                 document.getElementById('analysis-title').innerText = title;
                 Utils.typeWriter('analysis-body', body, 20);
             },
@@ -691,12 +800,18 @@
             }
         };
 
+        // Attach to window for HTML onclick access
+        window.nav = nav;
+        window.app = app;
+        window.timer = timer;
+        window.journal = journal;
+
         // Initialize All
         document.addEventListener('DOMContentLoaded', () => {
             nav.init();
             app.init();
             journal.init();
-            timer.reset(); // Set initial state
+            timer.reset(); 
             lucide.createIcons();
         });
 
