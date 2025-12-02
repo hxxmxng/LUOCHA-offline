@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>LUOCHA</title>
+    
+    <!-- Sage Green Digital Block Favicon -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7ddBCgAhCAVRN+r+t8wFBCuC0T/wPcj0k2j6GmN82O2Wc44PjL0iFhABAQEBAQEBAQEBAQEBAT8B7gP8F3j6E+CjvwICAgLwAD17DALynO6cAAAAAElFTkSuQmCC" />
+    <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7ddBCgAhCAVRN+r+t8wFBCuC0T/wPcj0k2j6GmN82O2Wc44PjL0iFhABAQEBAQEBAQEBAQEBAT8B7gP8F3j6E+CjvwICAgLwAD17DALynO6cAAAAAElFTkSuQmCC" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+        ::-webkit-scrollbar-thumb:hover { background: #000; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body { cursor: crosshair; overscroll-behavior-y: none; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        
+        /* Utility for hiding views */
+        .view-section { display: none; height: 100%; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .view-section.active { display: flex; opacity: 1; }
+
+        /* Typewriter Cursor */
+        .typewriter-cursor::after {
+            content: '|';
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Abyss Gradient Animation */
+        .abyss-water {
+            transition: height 1s linear, background 1s ease;
+            mask-image: linear-gradient(to bottom, transparent, black 15%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                    },
+                    colors: {
+                        editorial: { bg: '#f8f8f5', text: '#1a1a1a', accent: '#0000ff', highlight: '#ccff00', muted: '#888888' }
+                    }
+                }
+            }
+        }
+    </script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+</head>
+<body class="bg-editorial-bg text-editorial-text selection:bg-editorial-accent selection:text-white h-[100dvh] overflow-hidden font-sans">
+
+    <div class="flex h-full w-full flex-col md:flex-row">
+        
+        <!-- SIDEBAR / BOTTOM NAV -->
+        <nav class="z-[100] w-full md:w-24 md:h-full h-24 bg-white border-t-2 md:border-t-0 md:border-r-2 border-black flex md:flex-col justify-between items-center px-6 md:px-0 fixed bottom-0 md:relative pb-safe md:pb-6 pt-4 md:pt-6">
+            <div class="hidden md:block font-serif font-bold text-2xl tracking-widest rotate-180 writing-vertical text-center mb-6 select-none">LUOCHA</div>
+            
+            <div class="flex md:flex-col justify-between w-full md:w-auto md:space-y-16" id="nav-container">
+                <!-- Nav items injected by JS -->
+            </div>
+
+            <div class="hidden md:block text-[9px] font-mono text-gray-300 -rotate-90 whitespace-nowrap mb-4">OFFLINE.MODE</div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 overflow-y-auto overflow-x-hidden relative h-full scrollbar-hide">
+            <div class="w-full min-h-full p-5 md:p-8 max-w-6xl mx-auto pb-28 md:pb-10">
+                
+                <!-- DASHBOARD VIEW -->
+                <section id="view-dashboard" class="view-section active flex-col gap-6">
+                    <header class="flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-black pb-3 shrink-0">
+                        <div>
+                            <h2 class="font-mono text-xs tracking-tighter uppercase mb-1 text-editorial-muted">Daily Overview</h2>
+                            <h1 class="font-serif text-5xl md:text-7xl font-bold leading-none tracking-tight">The Atelier</h1>
+                        </div>
+                        <div class="text-right font-mono text-xs mt-3 md:mt-0 flex flex-col items-end">
+                            <p id="current-date" class="border-b border-black pb-0.5 mb-1">Loading...</p>
+                            <p class="text-white bg-editorial-accent inline-block px-1.5 py-0.5 text-[10px] font-bold">VOL. 03</p>
+                        </div>
+                    </header>
+
+                    <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 min-h-0">
+                        <!-- LEFT COL -->
+                        <div class="md:col-span-5 flex flex-col gap-6">
+                            <!-- Check In -->
+                            <div class="border border-black p-5 bg-white shadow-sm flex flex-col gap-4">
+                                <h3 class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">Attendance</h3>
+                                <div class="flex gap-3">
+                                    <button onclick="app.toggleCheckIn('AM')" id="btn-am" class="flex-1 py-4 px-3 border border-gray-200 transition-all flex flex-col items-center justify-center gap-2 hover:border-black">
+                                        <i data-lucide="sun" width="18"></i>
+                                        <span class="font-mono text-[10px] font-bold">AM CHECK-IN</span>
+                                        <span id="time-am" class="text-[9px] font-mono opacity-70"></span>
+                                    </button>
+                                    <button onclick="app.toggleCheckIn('PM')" id="btn-pm" class="flex-1 py-4 px-3 border border-gray-200 transition-all flex flex-col items-center justify-center gap-2 hover:border-black">
+                                        <i data-lucide="moon" width="18"></i>
+                                        <span class="font-mono text-[10px] font-bold">PM CHECK-OUT</span>
+                                        <span id="time-pm" class="text-[9px] font-mono opacity-70"></span>
+                                    </button>
+                                </div>
+                                <div id="checkin-msg-box" class="hidden bg-editorial-bg p-3 text-sm font-serif italic text-center text-editorial-text border-l-2 border-editorial-accent">
+                                    "<span id="checkin-msg-text"></span>"
+                                </div>
+                            </div>
+
+                            <!-- Quote -->
+                            <div class="flex-1 border border-black p-5 bg-white shadow-sm flex flex-col relative justify-center min-h-[200px]">
+                                <div class="absolute top-0 left-0 bg-black text-white px-2 py-0.5 font-mono text-[10px] font-bold">QUOTE OF THE MOMENT</div>
+                                <div class="mt-6 space-y-5">
+                                    <div>
+                                        <p id="quote-text" class="font-serif text-xl md:text-3xl italic leading-snug">Loading...</p>
+                                        <p id="quote-author" class="font-mono text-xs text-right mt-3 text-gray-500 uppercase"></p>
+                                    </div>
+                                    <div class="pt-3 border-t border-gray-100">
+                                        <p class="font-sans text-sm text-editorial-muted">
+                                            LUOCHA: <span id="quote-comment" class="text-black"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COL: PROTOCOL -->
+                        <div class="md:col-span-7 flex flex-col h-full gap-4 md:min-h-[400px] min-h-0">
+                            <div class="flex flex-wrap justify-between items-end border-b border-black pb-2 gap-2 shrink-0">
+                                <h2 class="font-serif text-3xl italic">The Protocol</h2>
+                                <div class="flex gap-1">
+                                    <button onclick="app.addQuickMission('RESET')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="refresh-cw" width="10"></i> RESET</button>
+                                    <button onclick="app.addQuickMission('BODY')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="leaf" width="10"></i> BODY</button>
+                                    <button onclick="app.addQuickMission('MIND')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="brain" width="10"></i> MIND</button>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-0 border border-black bg-white shrink-0">
+                                <input type="text" id="task-input" placeholder="New Directive..." class="flex-1 p-4 font-mono text-sm focus:outline-none bg-white placeholder:text-gray-400" onkeydown="if(event.key === 'Enter') app.addTask()">
+                                <button onclick="app.addTask()" class="bg-black text-white px-6 hover:bg-editorial-accent transition-colors"><i data-lucide="plus" width="20"></i></button>
+                            </div>
+
+                            <div id="task-list" class="bg-editorial-bg flex-1 flex flex-col gap-3 overflow-y-auto pr-1 min-h-[200px]">
+                                <!-- Tasks injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FOCUS VIEW -->
+                <section id="view-focus" class="view-section flex-col justify-center items-center relative transition-colors duration-500 overflow-hidden bg-editorial-bg h-full">
+                    <!-- Abyss Gradient Layer -->
+                    <div id="abyss-layer" class="abyss-water absolute bottom-0 left-0 w-full pointer-events-none opacity-20" style="height: 100%; background: linear-gradient(to top, #000428 0%, #004e92 100%);"></div>
+
+                    <div class="absolute top-0 left-0 z-20">
+                        <h2 class="font-serif text-3xl italic">The Ritual</h2>
+                        <p id="focus-mode-label" class="font-mono text-[10px] text-gray-500 mt-1 tracking-widest">DOPAMINE REGULATION IN PROGRESS</p>
+                    </div>
+
+                    <div class="relative z-10 text-center w-full max-w-2xl px-4">
+                        <div id="timer-display-container">
+                            <div id="timer-val" class="font-mono text-[12vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500">25:00</div>
+                        </div>
+                        
+                        <!-- Feedback Modal (Hidden by default) -->
+                        <div id="feedback-modal" class="hidden animate-in zoom-in duration-300 w-full p-6 border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto">
+                            <p id="feedback-text" class="font-serif text-xl italic mb-4"></p>
+                            <button onclick="timer.reset()" class="font-mono text-xs bg-black text-white px-4 py-2 hover:bg-editorial-accent transition-colors">ACKNOWLEDGED</button>
+                        </div>
+                    </div>
+
+                    <div id="timer-controls" class="relative z-20 flex flex-col items-center">
+                        <div class="mt-10 flex gap-6 items-center">
+                            <button onclick="timer.toggle()" id="btn-timer-toggle" class="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 group bg-transparent">
+                                <i data-lucide="play" width="24" class="ml-1"></i>
+                            </button>
+                            <button onclick="timer.reset()" class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:border-black hover:text-black transition-all bg-white/50">
+                                <i data-lucide="rotate-ccw" width="16"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-10 flex gap-3">
+                            <button onclick="timer.setMode('FOCUS')" id="mode-focus" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors bg-black text-white border-black">DEEP WORK</button>
+                            <button onclick="timer.setMode('REST')" id="mode-rest" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors text-gray-400 border-gray-200 hover:border-black bg-white/50">REFUEL</button>
+                            <button onclick="timer.setMode('TIDY')" id="mode-tidy" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors flex items-center gap-1 text-gray-400 border-gray-200 hover:border-editorial-accent hover:text-editorial-accent bg-white/50">
+                                <i data-lucide="sparkles" width="10"></i> 5MIN TIDY
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="absolute bottom-0 w-full text-center z-20 pb-4">
+                        <p id="timer-quote" class="font-serif italic text-gray-400 text-sm">Silence is the language of focus.</p>
+                    </div>
+                </section>
+
+                <!-- JOURNAL VIEW -->
+                <section id="view-journal" class="view-section flex-col md:flex-row gap-6 relative h-full">
+                     <!-- Copy Toast -->
+                    <div id="copy-toast" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 py-1 font-mono text-xs z-50">COPIED</div>
+
+                    <!-- Left: Input -->
+                    <div class="flex-1 flex flex-col h-1/2 md:h-full">
+                        <header class="flex-none mb-4 flex justify-between items-end">
+                            <h2 class="font-serif text-3xl md:text-5xl">The Archive</h2>
+                            <div class="flex gap-2">
+                                <button onclick="journal.copy()" class="flex items-center gap-1 font-mono text-xs border border-black px-3 py-1 hover:bg-black hover:text-white transition-colors" title="Copy to Clipboard">
+                                    <i data-lucide="copy" width="14"></i> COPY
+                                </button>
+                                <button onclick="journal.dissect()" class="flex items-center gap-1 font-mono text-xs bg-editorial-accent text-white px-3 py-1 hover:bg-blue-700 transition-colors" title="CBT/ACT Analysis">
+                                    <i data-lucide="brain-circuit" width="14"></i> DISSECT
+                                </button>
+                                <button onclick="journal.analyze()" class="flex items-center gap-1 font-mono text-xs bg-black text-white px-3 py-1 hover:bg-gray-800 transition-colors" title="General Analysis">
+                                    <i data-lucide="save" width="14"></i> ANALYZE
+                                </button>
+                            </div>
+                        </header>
+                        <textarea id="journal-input" class="flex-1 w-full bg-white border border-gray-200 p-6 font-serif text-lg leading-loose resize-none focus:outline-none focus:border-black transition-colors placeholder:text-gray-300 placeholder:italic italic" placeholder="Unload your mind. I will handle the rest..."></textarea>
+                    </div>
+
+                    <!-- Right: Analysis -->
+                    <div class="h-1/2 md:h-full md:w-1/3 border-t md:border-t-0 md:border-l border-black pt-4 md:pt-0 md:pl-6 flex flex-col justify-center bg-editorial-bg md:bg-transparent overflow-y-auto">
+                        <div id="analysis-empty" class="text-center text-gray-300 flex flex-col items-center opacity-50">
+                            <div class="w-14 h-14 border border-gray-200 rounded-full flex items-center justify-center mb-3">
+                                <span class="font-serif italic text-2xl">i</span>
+                            </div>
+                            <p class="font-mono text-xs max-w-[150px]">Waiting for input...</p>
+                        </div>
+                        <div id="analysis-content" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
+                            <span class="font-mono text-[10px] text-gray-400 tracking-widest uppercase mb-3 block">Essence Extraction</span>
+                            <h3 id="analysis-title" class="font-serif text-3xl italic mb-4 leading-tight text-editorial-accent"></h3>
+                            <p id="analysis-body" class="font-sans text-base leading-relaxed text-gray-600 border-l-2 border-editorial-highlight pl-4 whitespace-pre-line"></p>
+                            <div class="mt-6 font-mono text-xs text-right text-gray-400">-- LUOCHA</div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- SCRIPT ENGINE -->
+    <script>
+        // --- 1. DATA STORE (LUOCHA'S BRAIN) ---
+        const LUOCHA_DB = {
+            quotes: [
+                {q: "The only way out is through.", a: "Robert Frost", c: "지금 이 순간을 견뎌내는 것이 유일한 방법입니다."},
+                {q: "Chaos is merely order waiting to be deciphered.", a: "José Saramago", c: "혼란스러워할 필요 없습니다. 모든 것엔 순서가 있으니까요."},
+                {q: "He who has a why to live can bear almost any how.", a: "Friedrich Nietzsche", c: "이유가 있다면, 어떤 고통도 견딜 수 있습니다."},
+                {q: "Discipline is freedom.", a: "Anonymous", c: "통제된 삶만이 진정한 자유를 줍니다."},
+                {q: "Action is the foundational key to all success.", a: "Pablo Picasso", c: "망설임은 시간을 죽일 뿐입니다. 움직이십시오."},
+                {q: "Simplicity is the ultimate sophistication.", a: "Leonardo da Vinci", c: "복잡함은 게으름의 증거입니다. 단순해지세요."},
+                {q: "Do not go gentle into that good night.", a: "Dylan Thomas", c: "무기력에 순응하지 마십시오. 저항하십시오."},
+                {q: "To cure sometimes, to relieve often, to comfort always.", a: "Hippocrates", c: "제가 당신을 완전히 고칠 순 없어도, 곁에 있을 순 있습니다."},
+                {q: "The wound is the place where the Light enters you.", a: "Rumi", c: "지금의 고통은 당신이 성장하고 있다는 증거입니다."}
+            ],
+            amCheckIn: [
+                "하루의 거래가 시작되었습니다. 준비되셨습니까?", "눈을 뜨셨군요. 오늘의 활력 징후는 안정적입니까?", "어서 오십시오. 세상은 당신의 대답을 기다리고 있습니다.",
+                "질서 정연한 하루가 되기를 바랍니다. 시작하십시오.", "기다리고 있었습니다. 무엇부터 처리하시겠습니까?", "각성 상태를 유지하십시오. 실수 없는 하루를 위해.",
+                "혼란에 잠식되지 마십시오. 통제권은 당신에게 있습니다."
+            ],
+            pmCheckIn: [
+                "수고하셨습니다. 이제 짐을 내려놓을 시간입니다.", "오늘의 거래가 종료되었습니다. 편안히 쉬십시오.", "당신의 노고는 제가 기억하겠습니다. 안녕히 주무십시오.",
+                "복잡한 생각은 관 속에 넣어두십시오. 내일 다시 꺼내도 늦지 않습니다.", "심연도 잠들 시간입니다. 당신 또한 눈을 감으십시오.", "오늘의 소란스러움은 잊으십시오."
+            ],
+            motivations: [
+                "지금 처리하십시오.", "망설임은 사치입니다.", "생각하지 말고 움직이세요.", "감정은 배제하고 사실만 보십시오.", "이것만 끝내면 자유입니다.",
+                "미루는 것은 미래의 자신에게 빚을 지는 겁니다.", "완벽하지 않아도 됩니다. 완료하는 것이 중요합니다.", "지금 당신에게 필요한 건 '시작'입니다.",
+                "도파민의 늪에서 빠져나올 밧줄입니다. 잡으세요."
+            ],
+            feedback: {
+                FOCUS: ["집중력이 훌륭했습니다.", "몰입의 깊이가 느껴졌습니다.", "이제 한 단계 성장하셨군요.", "고요함 속에서 당신은 강해집니다."],
+                REST: ["휴식도 전략입니다.", "충전이 완료되었길 바랍니다.", "이제 다시 전장으로 돌아갈 시간입니다."],
+                TIDY: ["공간의 질서가 마음의 질서입니다.", "훨씬 쾌적해졌군요.", "무질서를 정복하셨습니다."]
+            },
+            dissectTitle: ["COGNITIVE DISSECTION", "FACT CHECK", "REALITY ANCHORING", "EMOTIONAL DETACHMENT"],
+            dissectPrefix: [
+                "감정과 사실을 분리했습니다.", "당신의 생각은 당신이 아닙니다.", "인지적 오류를 발견했습니다.", "상황을 객관적으로 재구성했습니다."
+            ],
+            analysisGeneric: [
+                "당신의 글에서 깊은 고뇌가 느껴집니다. 하지만 답은 이미 당신 안에 있습니다.",
+                "지금은 혼란스러워 보이지만, 이 또한 지나가는 과정일 뿐입니다. 기록은 질서를 만듭니다.",
+                "스스로에게 너무 가혹하지 마십시오. 충분히 잘하고 있습니다.",
+                "불안은 미래를 대비하려는 마음의 작용일 뿐입니다. 현재에 집중하십시오.",
+                "이 감정의 파도 또한 가라앉을 것입니다. 저는 닻이 되어드리겠습니다."
+            ],
+            missions: {
+                RESET: ["책상 위 불필요한 물건 제거", "창문 열고 3분 환기", "침대 시트 정리", "쓰레기통 비우기", "영수증 버리기", "책상 먼지 닦기"],
+                BODY: ["물 한 잔 마시기", "심호흡 3번", "어깨 으쓱하고 털기", "1분 스트레칭", "눈 감고 10초 휴식", "목 돌리기", "척추 펴고 앉기"],
+                MIND: ["걱정 적고 찢기", "거울 보고 미소 짓기", "좋아하는 음악 1곡", "2분간 멍때리기", "쉬운 일 하나 처리하기"]
+            }
+        };
+
+        // --- 2. CORE UTILS ---
+        const Utils = {
+            getRandom: (arr) => arr[Math.floor(Math.random() * arr.length)],
+            typeWriter: (elementId, text, speed = 30) => {
+                const el = document.getElementById(elementId);
+                el.innerHTML = '';
+                let i = 0;
+                function type() {
+                    if (i < text.length) {
+                        el.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    }
+                }
+                type();
+            },
+            getTodayStr: () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+        };
+
+        // --- 3. APP MODULES ---
+        
+        // Navigation Logic
+        const nav = {
+            views: ['dashboard', 'focus', 'journal'],
+            current: 'dashboard',
+            init: () => {
+                const container = document.getElementById('nav-container');
+                const items = [
+                    { id: 'dashboard', label: 'ATELIER', icon: 'square' },
+                    { id: 'focus', label: 'FOCUS', icon: 'zap' },
+                    { id: 'journal', label: 'ARCHIVE', icon: 'file-text' }
+                ];
+                
+                container.innerHTML = items.map(item => `
+                    <button onclick="nav.switch('${item.id}')" class="group relative flex flex-col items-center justify-center transition-all duration-300 text-gray-300 hover:text-black" id="nav-${item.id}">
+                        <div class="p-2 transition-transform duration-300 group-hover:scale-110">
+                            <i data-lucide="${item.icon}" width="22"></i>
+                        </div>
+                        <span class="hidden md:block absolute left-16 bg-black text-white text-[10px] font-mono px-2 py-1 opacity-0 group-hover:opacity-100 pointer-events-none z-50">${item.label}</span>
+                        <div class="hidden md:block absolute -left-5 w-1 h-8 bg-editorial-accent nav-indicator hidden"></div>
+                    </button>
+                `).join('');
+                
+                lucide.createIcons();
+                nav.render();
+            },
+            switch: (viewId) => {
+                nav.current = viewId;
+                nav.render();
+            },
+            render: () => {
+                nav.views.forEach(v => {
+                    // Hide Sections
+                    const el = document.getElementById(`view-${v}`);
+                    if (v === nav.current) el.classList.add('active');
+                    else el.classList.remove('active');
+
+                    // Update Nav Icons
+                    const btn = document.getElementById(`nav-${v}`);
+                    const indicator = btn.querySelector('.nav-indicator');
+                    const icon = btn.querySelector('svg');
+                    
+                    if (v === nav.current) {
+                        btn.classList.remove('text-gray-300');
+                        btn.classList.add('text-black');
+                        indicator.classList.remove('hidden');
+                        if(icon) icon.setAttribute('stroke-width', '2.5');
+                    } else {
+                        btn.classList.add('text-gray-300');
+                        btn.classList.remove('text-black');
+                        indicator.classList.add('hidden');
+                        if(icon) icon.setAttribute('stroke-width', '2');
+                    }
+                });
+            }
+        };
+
+        // Main App Logic
+        const app = {
+            state: {
+                tasks: JSON.parse(localStorage.getItem('luocha_tasks') || '[]'),
+                checkIn: JSON.parse(localStorage.getItem('luocha_checkin') || '{"amChecked":false,"pmChecked":false,"date":""}'),
+                quote: JSON.parse(localStorage.getItem('luocha_quote') || 'null')
+            },
+            init: () => {
+                document.getElementById('current-date').innerText = Utils.getTodayStr();
+                app.loadQuote();
+                app.renderCheckIn();
+                app.renderTasks();
+            },
+            loadQuote: () => {
+                const today = new Date().toDateString();
+                if (!app.state.quote || app.state.quote.date !== today) {
+                    const raw = Utils.getRandom(LUOCHA_DB.quotes);
+                    app.state.quote = { ...raw, date: today };
+                    localStorage.setItem('luocha_quote', JSON.stringify(app.state.quote));
+                }
+                const q = app.state.quote;
+                document.getElementById('quote-text').innerText = `"${q.q}"`;
+                document.getElementById('quote-author').innerText = `— ${q.a}`;
+                Utils.typeWriter('quote-comment', q.c);
+            },
+            toggleCheckIn: (type) => {
+                const today = new Date().toDateString();
+                if (app.state.checkIn.date !== today) {
+                    app.state.checkIn = { date: today, amChecked: false, pmChecked: false };
+                }
+                
+                const key = type === 'AM' ? 'amChecked' : 'pmChecked';
+                const timeKey = type === 'AM' ? 'amTime' : 'pmTime';
+                const isChecked = !app.state.checkIn[key];
+                
+                app.state.checkIn[key] = isChecked;
+                app.state.checkIn[timeKey] = isChecked ? new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : undefined;
+                
+                // Set Message
+                const msgBox = document.getElementById('checkin-msg-box');
+                if (isChecked) {
+                    const pool = type === 'AM' ? LUOCHA_DB.amCheckIn : LUOCHA_DB.pmCheckIn;
+                    const msg = Utils.getRandom(pool);
+                    msgBox.classList.remove('hidden');
+                    Utils.typeWriter('checkin-msg-text', msg);
+                } else {
+                    msgBox.classList.add('hidden');
+                }
+                
+                localStorage.setItem('luocha_checkin', JSON.stringify(app.state.checkIn));
+                app.renderCheckIn();
+            },
+            renderCheckIn: () => {
+                const { amChecked, pmChecked, amTime, pmTime } = app.state.checkIn;
+                
+                const btnAM = document.getElementById('btn-am');
+                const timeAM = document.getElementById('time-am');
+                if(amChecked) { btnAM.classList.add('bg-black', 'text-white'); timeAM.innerText = amTime; }
+                else { btnAM.classList.remove('bg-black', 'text-white'); timeAM.innerText = ''; }
+
+                const btnPM = document.getElementById('btn-pm');
+                const timePM = document.getElementById('time-pm');
+                if(pmChecked) { btnPM.classList.add('bg-black', 'text-white'); timePM.innerText = pmTime; }
+                else { btnPM.classList.remove('bg-black', 'text-white'); timePM.innerText = ''; }
+            },
+            addTask: () => {
+                const input = document.getElementById('task-input');
+                const text = input.value.trim();
+                if (!text) return;
+                
+                const task = {
+                    id: Date.now(),
+                    text: text,
+                    completed: false,
+                    motivation: Utils.getRandom(LUOCHA_DB.motivations)
+                };
+                app.state.tasks.unshift(task);
+                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
+                input.value = '';
+                app.renderTasks();
+            },
+            addQuickMission: (category) => {
+                const pool = LUOCHA_DB.missions[category];
+                const taskText = category === 'RESET' ? 'RESET' : `${category} RESET`;
+                const task = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false,
+                    motivation: Utils.getRandom(pool)
+                };
+                app.state.tasks.unshift(task);
+                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
+                app.renderTasks();
+            },
+            toggleTask: (id) => {
+                const task = app.state.tasks.find(t => t.id === id);
+                if (task) {
+                    task.completed = !task.completed;
+                    localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
+                    app.renderTasks();
+                }
+            },
+            removeTask: (id) => {
+                app.state.tasks = app.state.tasks.filter(t => t.id !== id);
+                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
+                app.renderTasks();
+            },
+            renderTasks: () => {
+                const list = document.getElementById('task-list');
+                if (app.state.tasks.length === 0) {
+                    list.innerHTML = `<div class="flex-1 flex items-center justify-center text-gray-400 font-mono text-sm italic">No active protocols. Initiate now.</div>`;
+                    return;
+                }
+                
+                list.innerHTML = app.state.tasks.map(t => `
+                    <div class="group flex flex-col bg-white border border-gray-200 hover:border-black transition-colors p-4 shadow-sm shrink-0">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3 flex-1">
+                                <button onclick="app.toggleTask(${t.id})" class="mt-1 min-w-[1.25rem] w-5 h-5 border border-black flex items-center justify-center transition-colors ${t.completed ? 'bg-black' : 'bg-transparent'}">
+                                    ${t.completed ? '<i data-lucide="check" width="12" class="text-white"></i>' : ''}
+                                </button>
+                                <div class="${t.completed ? 'opacity-30 line-through' : ''}">
+                                    <p class="font-mono text-sm font-bold">${t.text}</p>
+                                    <p class="font-serif text-sm text-editorial-accent mt-1 italic">${t.motivation}</p>
+                                </div>
+                            </div>
+                            <button onclick="app.removeTask(${t.id})" class="text-gray-300 hover:text-red-500 self-start p-1"><i data-lucide="x" width="16"></i></button>
+                        </div>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            }
+        };
+
+        // Timer Module
+        const timer = {
+            mode: 'FOCUS',
+            timeLeft: 25 * 60,
+            interval: null,
+            isActive: false,
+            setMode: (m) => {
+                timer.mode = m;
+                timer.reset();
+                
+                // Update Buttons
+                ['focus', 'rest', 'tidy'].forEach(type => {
+                    const btn = document.getElementById(`mode-${type}`);
+                    if (type.toUpperCase() === m) {
+                        btn.className = type === 'tidy' 
+                            ? "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors flex items-center gap-1 bg-editorial-accent text-white border-editorial-accent"
+                            : "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors bg-black text-white border-black";
+                    } else {
+                        btn.className = "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors text-gray-400 border-gray-200 hover:border-black bg-white/50";
+                        if (type === 'tidy') btn.classList.add('flex', 'items-center', 'gap-1');
+                    }
+                });
+
+                // Update Gradient Color
+                const layer = document.getElementById('abyss-layer');
+                if (m === 'FOCUS') layer.style.background = 'linear-gradient(to top, #000428 0%, #004e92 100%)';
+                else if (m === 'REST') layer.style.background = 'linear-gradient(to top, #1a2980 0%, #26d0ce 100%)';
+                else layer.style.background = 'linear-gradient(to top, #232526 0%, #414345 100%)';
+
+                // Update Labels
+                document.getElementById('focus-mode-label').innerText = m === 'TIDY' ? 'ENVIRONMENT RESET PROTOCOL' : 'DOPAMINE REGULATION IN PROGRESS';
+                document.getElementById('timer-quote').innerText = m === 'TIDY' ? "Move fast. Don't think." : (m === 'FOCUS' ? "Silence is the language of focus." : "Rest is also a weapon.");
+                
+                // Text Color
+                document.getElementById('timer-val').className = `font-mono text-[12vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500 ${m === 'TIDY' ? 'text-editorial-accent' : 'text-black'}`;
+            },
+            toggle: () => {
+                if (timer.isActive) {
+                    clearInterval(timer.interval);
+                    timer.isActive = false;
+                    document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="play" width="24" class="ml-1"></i>';
+                } else {
+                    timer.isActive = true;
+                    document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="pause" width="24"></i>';
+                    timer.interval = setInterval(() => {
+                        timer.timeLeft--;
+                        timer.render();
+                        if (timer.timeLeft <= 0) {
+                            timer.complete();
+                        }
+                    }, 1000);
+                }
+                lucide.createIcons();
+            },
+            reset: () => {
+                clearInterval(timer.interval);
+                timer.isActive = false;
+                if (timer.mode === 'FOCUS') timer.timeLeft = 25 * 60;
+                else if (timer.mode === 'REST') timer.timeLeft = 5 * 60;
+                else timer.timeLeft = 5 * 60;
+                
+                timer.render();
+                document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="play" width="24" class="ml-1"></i>';
+                lucide.createIcons();
+                
+                // Reset View
+                document.getElementById('timer-display-container').classList.remove('hidden');
+                document.getElementById('timer-controls').classList.remove('hidden');
+                document.getElementById('feedback-modal').classList.add('hidden');
+            },
+            complete: () => {
+                clearInterval(timer.interval);
+                timer.isActive = false;
+                
+                document.getElementById('timer-display-container').classList.add('hidden');
+                document.getElementById('timer-controls').classList.add('hidden');
+                
+                const modal = document.getElementById('feedback-modal');
+                modal.classList.remove('hidden');
+                
+                const msg = Utils.getRandom(LUOCHA_DB.feedback[timer.mode]);
+                document.getElementById('feedback-text').innerText = `"${msg}"`;
+            },
+            render: () => {
+                const mins = Math.floor(timer.timeLeft / 60);
+                const secs = timer.timeLeft % 60;
+                document.getElementById('timer-val').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                // Abyss Height
+                const total = timer.mode === 'FOCUS' ? 1500 : 300;
+                const pct = (timer.timeLeft / total) * 100;
+                document.getElementById('abyss-layer').style.height = `${pct}%`;
+            }
+        };
+
+        // Journal Module
+        const journal = {
+            init: () => {
+                const savedEntry = localStorage.getItem('luocha_journal_entry');
+                if (savedEntry) document.getElementById('journal-input').value = savedEntry;
+
+                const savedAnalysis = localStorage.getItem('luocha_journal_analysis');
+                if (savedAnalysis) {
+                    const data = JSON.parse(savedAnalysis);
+                    journal.showAnalysis(data.title, data.body);
+                }
+
+                // Auto save
+                document.getElementById('journal-input').addEventListener('input', (e) => {
+                    localStorage.setItem('luocha_journal_entry', e.target.value);
+                });
+            },
+            copy: () => {
+                const text = document.getElementById('journal-input').value;
+                if(!text) return;
+                
+                const analysisTitle = document.getElementById('analysis-title').innerText;
+                const analysisBody = document.getElementById('analysis-body').innerText;
+                
+                let fullText = `[JOURNAL]\n${text}`;
+                if (analysisTitle && analysisBody) {
+                    fullText += `\n\n[LUOCHA: ${analysisTitle}]\n${analysisBody}`;
+                }
+                
+                navigator.clipboard.writeText(fullText);
+                const toast = document.getElementById('copy-toast');
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 2000);
+            },
+            analyze: () => {
+                const text = document.getElementById('journal-input').value;
+                if(!text.trim()) return;
+
+                // Fake AI Logic: Pick a random profound sentence
+                const title = "ESSENCE EXTRACTION";
+                const body = Utils.getRandom(LUOCHA_DB.analysisGeneric);
+                
+                journal.saveAndShow(title, body);
+            },
+            dissect: () => {
+                const text = document.getElementById('journal-input').value;
+                if(!text.trim()) return;
+
+                // Fake CBT Logic
+                const title = Utils.getRandom(LUOCHA_DB.dissectTitle);
+                const prefix = Utils.getRandom(LUOCHA_DB.dissectPrefix);
+                const body = `${prefix}\n\n1. 사실과 감정을 분리하십시오.\n2. 지금 이 생각은 당신이 아닙니다.\n3. 통제할 수 없는 것은 놓아주십시오.`;
+
+                journal.saveAndShow(title, body);
+            },
+            saveAndShow: (title, body) => {
+                localStorage.setItem('luocha_journal_analysis', JSON.stringify({title, body}));
+                
+                document.getElementById('analysis-empty').classList.add('hidden');
+                const content = document.getElementById('analysis-content');
+                content.classList.remove('hidden');
+                
+                document.getElementById('analysis-title').innerText = title;
+                Utils.typeWriter('analysis-body', body, 20);
+            },
+            showAnalysis: (title, body) => {
+                document.getElementById('analysis-empty').classList.add('hidden');
+                document.getElementById('analysis-content').classList.remove('hidden');
+                document.getElementById('analysis-title').innerText = title;
+                document.getElementById('analysis-body').innerText = body;
+            }
+        };
+
+        // Initialize All
+        document.addEventListener('DOMContentLoaded', () => {
+            nav.init();
+            app.init();
+            journal.init();
+            timer.reset(); // Set initial state
+            lucide.createIcons();
+        });
+
+    </script>
+</body>
+</html>
