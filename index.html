@@ -4,63 +4,62 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>LUOCHA</title>
+    <meta name="theme-color" content="#f8f8f5">
+    <title>LUOCHA : OFFLINE</title>
     
-    <!-- Sage Green Digital Block Favicon -->
-    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABNSURBVHgB7ddBCgAhCAVRN+r+t8wFBCuC0T/wPcj0k2j6GmN82O2Wc44PjL0iFhABAQEBAQEBAQEBAQEBAT8B7gP8F3j6E+CjvwICAgLwAD17DALynO6cAAAAAElFTkSuQmCC" />
-    
+    <!-- 스타일 & 아이콘 로드 (Tailwind, Lucide, Fonts) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-        ::-webkit-scrollbar-thumb:hover { background: #000; }
+        /* 기본 설정 */
+        :root {
+            --bg-color: #f8f8f5;
+            --text-color: #1a1a1a;
+            --accent-color: #0000ff;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* 앱 같은 느낌을 위해 스크롤 제어 */
+            user-select: none; /* 앱 느낌 */
+        }
+        
+        /* 폰트 유틸리티 */
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        
+        /* 커스텀 스크롤바 (숨김 처리하지만 스크롤은 가능) */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-        body { cursor: crosshair; overscroll-behavior-y: none; }
-        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
-        
-        /* Utility for hiding views */
-        .view-section { display: none; height: 100%; opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .view-section.active { display: flex; opacity: 1; }
-
-        /* Typewriter Cursor */
-        .typewriter-cursor::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
+        /* 화면 전환 효과 */
+        .view-section { 
+            display: none; 
+            height: 100%; 
+            opacity: 0; 
+            animation: fadeIn 0.4s ease-out forwards;
         }
+        .view-section.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 타자기 커서 효과 */
+        .cursor-blink::after { content: '|'; animation: blink 1s step-end infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* Abyss Gradient Animation */
+        /* 심연(Abyss) 물결 효과 */
         .abyss-water {
             transition: height 1s linear, background 1s ease;
-            mask-image: linear-gradient(to bottom, transparent, black 15%);
-            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%);
-        }
-
-        /* Modal Animation */
-        .modal-enter { animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.95) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            mask-image: linear-gradient(to bottom, transparent, black 20%);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%);
         }
     </style>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        serif: ['"Playfair Display"', 'serif'],
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['"Space Mono"', 'monospace'],
-                    },
                     colors: {
                         editorial: { bg: '#f8f8f5', text: '#1a1a1a', accent: '#0000ff', highlight: '#ccff00', muted: '#888888' }
                     }
@@ -68,752 +67,574 @@
             }
         }
     </script>
-    <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0"
   }
 }
 </script>
 </head>
-<body class="bg-editorial-bg text-editorial-text selection:bg-editorial-accent selection:text-white h-[100dvh] overflow-hidden font-sans">
+<body class="h-[100dvh] flex flex-col md:flex-row">
 
-    <div class="flex h-full w-full flex-col md:flex-row">
+    <!-- [NAV] 네비게이션 바 (모바일:하단, 데스크탑:좌측) -->
+    <nav class="z-50 w-full md:w-24 md:h-full h-20 bg-white border-t-2 md:border-t-0 md:border-r-2 border-black flex md:flex-col justify-between items-center px-6 md:px-0 fixed bottom-0 md:relative pb-[env(safe-area-inset-bottom)] pt-2 md:pt-6">
+        <!-- 로고 -->
+        <div class="hidden md:block font-serif font-bold text-2xl tracking-widest rotate-180 writing-vertical text-center mb-6 text-black">LUOCHA</div>
         
-        <!-- SIDEBAR / BOTTOM NAV -->
-        <nav class="z-[100] w-full md:w-24 md:h-full h-24 bg-white border-t-2 md:border-t-0 md:border-r-2 border-black flex md:flex-col justify-between items-center px-6 md:px-0 fixed bottom-0 md:relative pb-safe md:pb-6 pt-4 md:pt-6">
-            <div class="hidden md:block font-serif font-bold text-2xl tracking-widest rotate-180 writing-vertical text-center mb-6 select-none">LUOCHA</div>
+        <!-- 메뉴 아이템 컨테이너 -->
+        <div class="flex md:flex-col justify-between w-full md:w-auto md:space-y-12">
+            <button onclick="app.nav('dashboard')" id="nav-dashboard" class="nav-btn group p-2 text-black transition-transform active:scale-95">
+                <i data-lucide="square" width="24"></i>
+                <span class="hidden md:block absolute left-14 bg-black text-white text-[10px] px-2 py-1 opacity-0 group-hover:opacity-100 font-mono">ATELIER</span>
+            </button>
+            <button onclick="app.nav('protocol')" id="nav-protocol" class="nav-btn group p-2 text-gray-400 hover:text-black transition-colors active:scale-95">
+                <i data-lucide="list-todo" width="24"></i>
+                <span class="hidden md:block absolute left-14 bg-black text-white text-[10px] px-2 py-1 opacity-0 group-hover:opacity-100 font-mono">PROTOCOL</span>
+            </button>
+            <button onclick="app.nav('focus')" id="nav-focus" class="nav-btn group p-2 text-gray-400 hover:text-black transition-colors active:scale-95">
+                <i data-lucide="zap" width="24"></i>
+                <span class="hidden md:block absolute left-14 bg-black text-white text-[10px] px-2 py-1 opacity-0 group-hover:opacity-100 font-mono">FOCUS</span>
+            </button>
+            <button onclick="app.nav('journal')" id="nav-journal" class="nav-btn group p-2 text-gray-400 hover:text-black transition-colors active:scale-95">
+                <i data-lucide="file-text" width="24"></i>
+                <span class="hidden md:block absolute left-14 bg-black text-white text-[10px] px-2 py-1 opacity-0 group-hover:opacity-100 font-mono">ARCHIVE</span>
+            </button>
+        </div>
+
+        <div class="hidden md:block text-[9px] font-mono text-gray-300 -rotate-90 whitespace-nowrap mb-4">OFFLINE.MODE</div>
+    </nav>
+
+    <!-- [MAIN] 메인 컨텐츠 영역 -->
+    <main class="flex-1 overflow-hidden relative h-full bg-editorial-bg">
+        <div class="w-full h-full p-5 md:p-8 max-w-5xl mx-auto pb-24 md:pb-10 overflow-y-auto scrollbar-hide">
             
-            <div class="flex md:flex-col justify-between w-full md:w-auto md:space-y-16" id="nav-container">
-                <!-- Nav items injected by JS -->
-            </div>
-
-            <div class="hidden md:block text-[9px] font-mono text-gray-300 -rotate-90 whitespace-nowrap mb-4">ONLINE</div>
-        </nav>
-
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 overflow-y-auto overflow-x-hidden relative h-full scrollbar-hide">
-            <div class="w-full min-h-full p-5 md:p-8 max-w-6xl mx-auto pb-28 md:pb-10">
-                
-                <!-- DASHBOARD VIEW -->
-                <section id="view-dashboard" class="view-section active flex-col gap-6">
-                    <header class="flex flex-col md:flex-row justify-between items-start md:items-end border-b-2 border-black pb-3 shrink-0">
-                        <div>
-                            <h2 class="font-mono text-xs tracking-tighter uppercase mb-1 text-editorial-muted">Situation Report</h2>
-                            <h1 class="font-serif text-5xl md:text-7xl font-bold leading-none tracking-tight">The Atelier</h1>
-                        </div>
-                        <div class="text-right font-mono text-xs mt-3 md:mt-0 flex flex-col items-end">
-                            <p id="current-date" class="border-b border-black pb-0.5 mb-1">Loading...</p>
-                            <p class="text-white bg-editorial-accent inline-block px-1.5 py-0.5 text-[10px] font-bold">VOL. 04</p>
-                        </div>
-                    </header>
-
-                    <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 min-h-0">
-                        <!-- LEFT COL -->
-                        <div class="md:col-span-5 flex flex-col gap-6">
-                            <!-- Check In -->
-                            <div class="border border-black p-5 bg-white shadow-sm flex flex-col gap-4">
-                                <h3 class="font-mono text-[10px] text-gray-400 uppercase tracking-widest">Existence Check</h3>
-                                <div class="flex gap-3">
-                                    <button onclick="app.toggleCheckIn('AM')" id="btn-am" class="flex-1 py-4 px-3 border border-gray-200 transition-all flex flex-col items-center justify-center gap-2 hover:border-black">
-                                        <i data-lucide="sun" width="18"></i>
-                                        <span class="font-mono text-[10px] font-bold">AM CHECK-IN</span>
-                                        <span id="time-am" class="text-[9px] font-mono opacity-70"></span>
-                                    </button>
-                                    <button onclick="app.toggleCheckIn('PM')" id="btn-pm" class="flex-1 py-4 px-3 border border-gray-200 transition-all flex flex-col items-center justify-center gap-2 hover:border-black">
-                                        <i data-lucide="moon" width="18"></i>
-                                        <span class="font-mono text-[10px] font-bold">PM CHECK-OUT</span>
-                                        <span id="time-pm" class="text-[9px] font-mono opacity-70"></span>
-                                    </button>
-                                </div>
-                                <div id="checkin-msg-box" class="hidden bg-editorial-bg p-3 text-sm font-serif italic text-center text-editorial-text border-l-2 border-editorial-accent">
-                                    "<span id="checkin-msg-text"></span>"
-                                </div>
-                            </div>
-
-                            <!-- Quote -->
-                            <div class="flex-1 border border-black p-5 bg-white shadow-sm flex flex-col relative justify-center min-h-[200px]">
-                                <div class="absolute top-0 left-0 bg-black text-white px-2 py-0.5 font-mono text-[10px] font-bold">PRESCRIPTION</div>
-                                <div class="mt-6 space-y-5">
-                                    <div>
-                                        <p id="quote-text" class="font-serif text-xl md:text-3xl italic leading-snug">Loading...</p>
-                                        <p id="quote-author" class="font-mono text-xs text-right mt-3 text-gray-500 uppercase"></p>
-                                    </div>
-                                    <div class="pt-3 border-t border-gray-100">
-                                        <p class="font-sans text-sm text-editorial-muted">
-                                            LUOCHA: <span id="quote-comment" class="text-black"></span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- RIGHT COL: PROTOCOL -->
-                        <div class="md:col-span-7 flex flex-col h-full gap-4 md:min-h-[400px] min-h-0">
-                            <div class="flex flex-wrap justify-between items-end border-b border-black pb-2 gap-2 shrink-0">
-                                <h2 class="font-serif text-3xl italic">The Protocol</h2>
-                                <div class="flex gap-1">
-                                    <button onclick="app.addQuickMission('RESET')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="refresh-cw" width="10"></i> RESET</button>
-                                    <button onclick="app.addQuickMission('BODY')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="leaf" width="10"></i> BODY</button>
-                                    <button onclick="app.addQuickMission('MIND')" class="font-mono text-[10px] border border-black px-2 py-1 hover:bg-black hover:text-white transition-colors flex items-center gap-1"><i data-lucide="brain" width="10"></i> MIND</button>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-0 border border-black bg-white shrink-0">
-                                <input type="text" id="task-input" placeholder="New Directive..." class="flex-1 p-4 font-mono text-sm focus:outline-none bg-white placeholder:text-gray-400" onkeydown="if(event.key === 'Enter') app.addTask()">
-                                <button onclick="app.addTask()" class="bg-black text-white px-6 hover:bg-editorial-accent transition-colors"><i data-lucide="plus" width="20"></i></button>
-                            </div>
-
-                            <div id="task-list" class="bg-editorial-bg flex-1 flex flex-col gap-3 overflow-y-auto pr-1 min-h-[200px]">
-                                <!-- Tasks injected here -->
-                            </div>
-                        </div>
+            <!-- 1. DASHBOARD: ATELIER -->
+            <section id="view-dashboard" class="view-section active flex-col gap-6">
+                <header class="border-b-2 border-black pb-4 flex justify-between items-end">
+                    <div>
+                        <h2 class="font-mono text-xs text-gray-500 uppercase tracking-widest mb-1">Status Report</h2>
+                        <h1 class="font-serif text-5xl md:text-7xl font-bold leading-none">The Atelier</h1>
                     </div>
-                </section>
+                    <div class="text-right">
+                        <div id="current-date" class="font-serif italic text-lg border-b border-black inline-block"></div>
+                        <div class="font-mono text-[10px] bg-black text-white inline-block px-1 mt-1">VOL. LOCAL</div>
+                    </div>
+                </header>
 
-                <!-- FOCUS VIEW -->
-                <section id="view-focus" class="view-section flex-col justify-between items-center relative transition-colors duration-500 overflow-hidden bg-editorial-bg h-full py-8 md:py-12">
-                    <!-- Abyss Gradient Layer -->
-                    <div id="abyss-layer" class="abyss-water absolute bottom-0 left-0 w-full pointer-events-none opacity-20" style="height: 100%; background: linear-gradient(to top, #000428 0%, #004e92 100%);"></div>
+                <!-- 체크인 -->
+                <div class="border border-black bg-white p-5 shadow-sm">
+                    <h3 class="font-mono text-[10px] text-gray-400 uppercase mb-4">Daily Existence Check</h3>
+                    <div class="flex gap-3 mb-4">
+                        <button onclick="app.toggleCheckIn('AM')" id="btn-am" class="flex-1 py-4 border border-gray-200 hover:border-black transition-all flex flex-col items-center gap-2">
+                            <i data-lucide="sun" width="16"></i>
+                            <span class="font-mono text-[10px] font-bold">AM OPEN</span>
+                        </button>
+                        <button onclick="app.toggleCheckIn('PM')" id="btn-pm" class="flex-1 py-4 border border-gray-200 hover:border-black transition-all flex flex-col items-center gap-2">
+                            <i data-lucide="moon" width="16"></i>
+                            <span class="font-mono text-[10px] font-bold">PM CLOSE</span>
+                        </button>
+                    </div>
+                    <div id="checkin-message" class="hidden bg-gray-50 p-3 border-l-2 border-blue-600 text-sm font-serif italic text-gray-800"></div>
+                </div>
 
-                    <div class="relative z-20 text-center w-full">
+                <!-- 오늘의 인용구 (DB에서 랜덤 로드) -->
+                <div class="border border-black bg-white p-6 shadow-sm flex flex-col gap-4 relative mt-auto md:mt-0">
+                    <span class="absolute top-0 left-0 bg-black text-white text-[10px] font-mono px-2 py-1">INSIGHT</span>
+                    <p id="quote-text" class="font-serif text-2xl md:text-3xl italic mt-4 leading-snug">"Loading..."</p>
+                    <p id="quote-author" class="font-mono text-xs text-right text-gray-400 uppercase"></p>
+                    <div class="border-t border-gray-100 pt-3">
+                        <p class="font-sans text-sm text-gray-500"><span class="font-bold text-black">나찰:</span> <span id="quote-comment"></span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. PROTOCOL: TASKS (분리된 뷰) -->
+            <section id="view-protocol" class="view-section flex-col h-full">
+                <header class="border-b-2 border-black pb-4 mb-6">
+                    <h2 class="font-mono text-xs text-gray-500 uppercase tracking-widest mb-1">Action Directives</h2>
+                    <h1 class="font-serif text-5xl md:text-6xl font-bold leading-none">The Protocol</h1>
+                </header>
+
+                <div class="flex flex-col gap-4 h-full">
+                    <!-- 퀵 액션 버튼들 -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="app.addQuickMission('RESET')" class="px-3 py-2 border border-black bg-white hover:bg-black hover:text-white transition-colors font-mono text-[10px] flex items-center gap-2">
+                            <i data-lucide="refresh-cw" width="12"></i> ENV. RESET
+                        </button>
+                        <button onclick="app.addQuickMission('BODY')" class="px-3 py-2 border border-black bg-white hover:bg-black hover:text-white transition-colors font-mono text-[10px] flex items-center gap-2">
+                            <i data-lucide="activity" width="12"></i> BODY SCAN
+                        </button>
+                        <button onclick="app.addQuickMission('MIND')" class="px-3 py-2 border border-black bg-white hover:bg-black hover:text-white transition-colors font-mono text-[10px] flex items-center gap-2">
+                            <i data-lucide="brain" width="12"></i> MIND CLEAR
+                        </button>
+                    </div>
+
+                    <!-- 입력창 -->
+                    <div class="flex border border-black bg-white shadow-sm shrink-0">
+                        <input type="text" id="task-input" placeholder="새로운 지령 입력..." 
+                               class="flex-1 p-4 font-mono text-sm outline-none bg-transparent"
+                               onkeydown="if(event.key === 'Enter') app.addTask()">
+                        <button onclick="app.addTask()" class="px-6 bg-black text-white hover:bg-blue-700 transition-colors">
+                            <i data-lucide="plus" width="20"></i>
+                        </button>
+                    </div>
+
+                    <!-- 태스크 리스트 -->
+                    <div id="task-list" class="flex-1 overflow-y-auto space-y-3 pb-20 pr-1">
+                        <!-- JS로 주입됨 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. FOCUS: TIMER -->
+            <section id="view-focus" class="view-section flex-col h-full relative">
+                <!-- 심연 배경 효과 -->
+                <div id="abyss-bg" class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-black opacity-20 abyss-water pointer-events-none z-0" style="height: 0%;"></div>
+
+                <div class="relative z-10 flex flex-col h-full justify-between py-6">
+                    <div class="text-center">
                         <h2 class="font-serif text-3xl italic">The Ritual</h2>
-                        <p id="focus-mode-label" class="font-mono text-[10px] text-gray-500 mt-1 tracking-widest">DOPAMINE REGULATION</p>
+                        <p id="focus-status" class="font-mono text-[10px] text-gray-500 tracking-[0.2em] mt-2">DOPAMINE DETOX</p>
                     </div>
 
-                    <div class="relative z-10 text-center w-full max-w-2xl px-4 flex-grow flex flex-col justify-center">
-                        <div id="timer-display-container">
-                            <div id="timer-val" class="font-mono text-[18vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500">25:00</div>
-                        </div>
-                        
-                        <!-- Feedback Modal -->
-                        <div id="feedback-modal" class="hidden animate-in zoom-in duration-300 w-full max-w-md p-6 border-2 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mx-auto">
-                            <p id="feedback-text" class="font-serif text-xl italic mb-4"></p>
-                            <button onclick="timer.reset()" class="font-mono text-xs bg-black text-white px-4 py-2 hover:bg-editorial-accent transition-colors">ACKNOWLEDGED</button>
-                        </div>
+                    <!-- 타이머 디스플레이 -->
+                    <div class="flex-1 flex flex-col items-center justify-center">
+                        <div id="timer-display" class="font-mono text-[18vw] md:text-[8rem] leading-none tracking-tighter select-none tabular-nums">25:00</div>
                     </div>
 
-                    <div id="timer-controls" class="relative z-20 flex flex-col items-center w-full pb-8">
-                        <div class="flex gap-6 items-center mb-8">
-                            <button onclick="timer.toggle()" id="btn-timer-toggle" class="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all duration-300 group bg-transparent">
-                                <i data-lucide="play" width="24" class="ml-1"></i>
+                    <!-- 컨트롤러 -->
+                    <div class="flex flex-col items-center gap-8 mb-8">
+                        <div class="flex items-center gap-6">
+                            <button onclick="timer.toggle()" id="btn-timer-toggle" class="w-16 h-16 rounded-full border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all">
+                                <i data-lucide="play" width="24" id="icon-play"></i>
+                                <i data-lucide="pause" width="24" id="icon-pause" class="hidden"></i>
                             </button>
-                            <button onclick="timer.reset()" class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-gray-400 hover:border-black hover:text-black transition-all bg-white/50">
+                            <button onclick="timer.reset()" class="w-10 h-10 rounded-full border border-gray-300 text-gray-400 flex items-center justify-center hover:border-black hover:text-black transition-all">
                                 <i data-lucide="rotate-ccw" width="16"></i>
                             </button>
                         </div>
 
-                        <div class="flex gap-3">
-                            <button onclick="timer.setMode('FOCUS')" id="mode-focus" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors bg-black text-white border-black">DEEP WORK</button>
-                            <button onclick="timer.setMode('REST')" id="mode-rest" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors text-gray-400 border-gray-200 hover:border-black bg-white/50">REFUEL</button>
-                            <button onclick="timer.setMode('TIDY')" id="mode-tidy" class="px-3 py-1 border rounded-full font-mono text-[10px] transition-colors flex items-center gap-1 text-gray-400 border-gray-200 hover:border-editorial-accent hover:text-editorial-accent bg-white/50">
-                                <i data-lucide="sparkles" width="10"></i> 5MIN TIDY
-                            </button>
-                        </div>
-                        <p id="timer-quote" class="font-serif italic text-gray-400 text-sm mt-6">Silence is the language of focus.</p>
-                    </div>
-                </section>
-
-                <!-- JOURNAL VIEW -->
-                <section id="view-journal" class="view-section flex-col md:flex-row gap-6 relative h-full">
-                     <!-- Copy Toast -->
-                    <div id="copy-toast" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 py-1 font-mono text-xs z-50">COPIED</div>
-
-                    <!-- CBT Modal -->
-                    <div id="cbt-modal" class="hidden absolute inset-0 z-50 bg-editorial-bg/90 backdrop-blur-sm flex items-center justify-center p-4">
-                        <div class="bg-white border-2 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] w-full max-w-lg flex flex-col max-h-[90%] overflow-hidden modal-enter">
-                            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50">
-                                <div>
-                                    <h3 class="font-serif text-2xl italic">Cognitive Glitch</h3>
-                                    <p class="font-mono text-[10px] text-gray-400 mt-1">SELECT YOUR POISON</p>
-                                </div>
-                                <button onclick="journal.closeModal()" class="hover:text-red-500 transition-colors"><i data-lucide="x" width="24"></i></button>
-                            </div>
-                            <div class="p-5 overflow-y-auto" id="cbt-options">
-                                <!-- Options injected via JS -->
-                            </div>
-                            <div class="p-5 border-t border-gray-100 bg-gray-50">
-                                <button onclick="journal.confirmDissect()" id="btn-cbt-confirm" disabled class="w-full bg-editorial-accent text-white py-3 font-mono text-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2">
-                                    <i data-lucide="brain-circuit" width="16"></i> INITIATE SURGERY
-                                </button>
-                            </div>
+                        <!-- 모드 선택 -->
+                        <div class="flex gap-2 bg-white/50 p-1 rounded-full border border-gray-200">
+                            <button onclick="timer.setMode('FOCUS')" class="timer-mode-btn px-4 py-1 rounded-full text-[10px] font-mono font-bold bg-black text-white transition-all" data-mode="FOCUS">FOCUS</button>
+                            <button onclick="timer.setMode('REST')" class="timer-mode-btn px-4 py-1 rounded-full text-[10px] font-mono text-gray-400 hover:text-black transition-all" data-mode="REST">REST</button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Left: Input -->
-                    <div class="flex-1 flex flex-col h-1/2 md:h-full">
-                        <header class="flex-none mb-4 flex justify-between items-end">
-                            <h2 class="font-serif text-3xl md:text-5xl">The Archive</h2>
-                            <div class="flex gap-2">
-                                <button onclick="journal.copy()" class="flex items-center gap-1 font-mono text-xs border border-black px-3 py-1 hover:bg-black hover:text-white transition-colors" title="Copy to Clipboard">
-                                    <i data-lucide="copy" width="14"></i> COPY
-                                </button>
-                                <button onclick="journal.openModal()" class="flex items-center gap-1 font-mono text-xs bg-editorial-accent text-white px-3 py-1 hover:bg-blue-700 transition-colors" title="CBT/ACT Analysis">
-                                    <i data-lucide="brain-circuit" width="14"></i> DISSECT
-                                </button>
-                                <button onclick="journal.analyze()" class="flex items-center gap-1 font-mono text-xs bg-black text-white px-3 py-1 hover:bg-gray-800 transition-colors" title="General Analysis">
-                                    <i data-lucide="save" width="14"></i> ANALYZE
-                                </button>
-                            </div>
-                        </header>
-                        <textarea id="journal-input" class="flex-1 w-full bg-white border border-gray-200 p-6 font-serif text-lg leading-loose resize-none focus:outline-none focus:border-black transition-colors placeholder:text-gray-300 placeholder:italic italic" placeholder="Unload your mind. I will handle the rest..."></textarea>
+                <!-- 완료 피드백 모달 (숨김) -->
+                <div id="timer-feedback" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 bg-white border-2 border-black p-6 text-center shadow-[4px_4px_0px_0px_black] z-50">
+                    <p id="timer-msg" class="font-serif italic text-lg mb-4"></p>
+                    <button onclick="timer.closeFeedback()" class="bg-black text-white px-4 py-2 font-mono text-xs hover:bg-blue-700">ACKNOWLEDGED</button>
+                </div>
+            </section>
+
+            <!-- 4. JOURNAL: ARCHIVE + CBT -->
+            <section id="view-journal" class="view-section flex-col h-full gap-4">
+                <header class="flex justify-between items-end border-b-2 border-black pb-4 shrink-0">
+                    <h1 class="font-serif text-5xl">The Archive</h1>
+                    <div class="flex gap-2">
+                        <button onclick="journal.openCBT()" class="flex items-center gap-2 bg-editorial-accent text-white px-3 py-1.5 font-mono text-xs hover:bg-blue-700 transition-colors">
+                            <i data-lucide="brain-circuit" width="14"></i>
+                            <span class="hidden md:inline">DISSECT</span>
+                        </button>
+                    </div>
+                </header>
+
+                <div class="flex-1 flex flex-col md:flex-row gap-6 overflow-hidden">
+                    <!-- 입력 영역 -->
+                    <div class="flex-1 flex flex-col h-full">
+                        <textarea id="journal-input" 
+                                  class="w-full h-full p-6 bg-white border border-gray-200 resize-none outline-none font-serif text-lg leading-relaxed placeholder:text-gray-300 placeholder:italic focus:border-black transition-colors"
+                                  placeholder="지금 당신을 괴롭히는 것은 사실입니까, 감정입니까?"></textarea>
                     </div>
 
-                    <!-- Right: Analysis -->
-                    <div class="h-1/2 md:h-full md:w-1/3 border-t md:border-t-0 md:border-l border-black pt-4 md:pt-0 md:pl-6 flex flex-col justify-center bg-editorial-bg md:bg-transparent overflow-y-auto">
-                        <div id="analysis-empty" class="text-center text-gray-300 flex flex-col items-center opacity-50">
-                            <div class="w-14 h-14 border border-gray-200 rounded-full flex items-center justify-center mb-3">
-                                <span class="font-serif italic text-2xl">i</span>
-                            </div>
-                            <p class="font-mono text-xs max-w-[150px]">Waiting for data...</p>
-                        </div>
-                        <div id="analysis-loading" class="hidden flex flex-col items-center justify-center text-editorial-accent">
-                            <i data-lucide="loader-2" width="24" class="animate-spin mb-2"></i>
-                            <span class="font-mono text-[10px] animate-pulse">ANALYZING PATTERNS...</span>
-                        </div>
-                        <div id="analysis-content" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-700">
-                            <span class="font-mono text-[10px] text-gray-400 tracking-widest uppercase mb-3 block">Essence Extraction</span>
-                            <h3 id="analysis-title" class="font-serif text-3xl italic mb-4 leading-tight text-editorial-accent"></h3>
-                            <p id="analysis-body" class="font-sans text-base leading-relaxed text-gray-600 border-l-2 border-editorial-highlight pl-4 whitespace-pre-line"></p>
-                            <div class="mt-6 font-mono text-xs text-right text-gray-400">-- LUOCHA</div>
-                        </div>
+                    <!-- 분석 결과 영역 -->
+                    <div id="journal-analysis-box" class="hidden md:flex md:w-1/3 border-t md:border-t-0 md:border-l border-black pt-4 md:pt-0 md:pl-6 flex-col overflow-y-auto">
+                        <span class="font-mono text-[10px] text-gray-400 uppercase tracking-widest mb-2">Analysis Result</span>
+                        <h3 id="analysis-title" class="font-serif text-2xl italic text-blue-800 mb-4"></h3>
+                        <div id="analysis-body" class="font-sans text-sm leading-7 text-gray-700 space-y-4"></div>
+                        <div class="mt-8 text-right font-mono text-xs text-gray-400">-- LUOCHA SYSTEM</div>
                     </div>
-                </section>
+                </div>
+            </section>
+        </div>
+    </main>
 
+    <!-- [MODAL] CBT 인지왜곡 선택 팝업 -->
+    <div id="cbt-modal" class="hidden fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg border-2 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex flex-col max-h-[70vh] animate-[fadeIn_0.2s_ease-out]">
+            
+            <!-- 헤더 -->
+            <div class="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50 shrink-0">
+                <div>
+                    <h3 class="font-serif text-xl italic font-bold">Cognitive Dissection</h3>
+                    <p class="font-mono text-[10px] text-gray-500 mt-1">인지 오류를 선택하여 해부하십시오.</p>
+                </div>
+                <button onclick="journal.closeCBT()" class="hover:text-red-500"><i data-lucide="x" width="24"></i></button>
             </div>
-        </main>
+
+            <!-- 리스트 (스크롤 가능) -->
+            <div class="overflow-y-auto p-2" id="cbt-options">
+                <!-- 옵션들이 JS로 주입됩니다 -->
+            </div>
+        </div>
     </div>
 
-    <!-- SCRIPT ENGINE -->
-    <script type="module">
-        import { GoogleGenAI } from "@google/genai";
-
-        // --- 0. AI SERVICE ---
-        let genAIClient = null;
-        try {
-            if (process.env.API_KEY) {
-                genAIClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            }
-        } catch (e) { console.log("Offline Mode"); }
-
-        async function callGemini(systemPrompt, userPrompt) {
-            if (!genAIClient) return null;
-            try {
-                const response = await genAIClient.models.generateContent({
-                    model: 'gemini-2.5-flash',
-                    contents: userPrompt,
-                    config: { systemInstruction: systemPrompt }
-                });
-                return response.text;
-            } catch (error) {
-                console.error("AI Error:", error);
-                return null;
-            }
-        }
-
-        // --- 1. DATA STORE (LUOCHA'S BRAIN) ---
+    <!-- 스크립트: 루오차 엔진 (Internal Brain) -->
+    <script>
+        // ---------------------------------------------------------
+        // [DATABASE] 나찰의 스크립트 & CBT 처방전 (사용자 수정 가능)
+        // ---------------------------------------------------------
         const LUOCHA_DB = {
-            distortions: [
-                { id: 'ALL_OR_NOTHING', label: '흑백논리 (All-or-Nothing)', desc: '모 아니면 도. 완벽하지 않으면 실패다.' },
-                { id: 'CATASTROPHIZING', label: '파국화 (Catastrophizing)', desc: '최악의 상황만 상상하며 두려움 증폭.' },
-                { id: 'EMOTIONAL', label: '감정적 추론 (Emotional Reasoning)', desc: '내 기분이 나쁘니 현실도 나쁘다.' },
-                { id: 'SHOULD', label: '당위적 사고 (Shoulds)', desc: '~해야만 한다며 스스로를 감옥에 가두는 것.' },
-                { id: 'MIND_READING', label: '독심술 (Mind Reading)', desc: '남들이 나를 비난한다고 넘겨짚는 오만.' },
-                { id: 'LABELING', label: '낙인찍기 (Labeling)', desc: '일시적 실수를 영원한 결함으로 규정.' }
-            ],
             quotes: [
-                {q: "The only way out is through.", a: "Robert Frost", c: "다른 길은 없습니다. 관통하십시오."},
-                {q: "Chaos is merely order waiting to be deciphered.", a: "José Saramago", c: "혼란은 아직 해독되지 않은 질서일 뿐입니다."},
-                {q: "He who has a why to live can bear almost any how.", a: "Nietzsche", c: "이유가 있다면, 어떤 지옥도 견딜 수 있습니다."},
-                {q: "Discipline is freedom.", a: "Anonymous", c: "자유는 방종이 아니라, 완벽한 통제 속에 있습니다."},
-                {q: "Action is the foundational key to all success.", a: "Picasso", c: "망설임은 시간을 죽이는 행위입니다. 움직이세요."},
-                {q: "Simplicity is the ultimate sophistication.", a: "Da Vinci", c: "복잡함은 게으름의 증거입니다. 본질만 남기십시오."},
-                {q: "Do not go gentle into that good night.", a: "Dylan Thomas", c: "순응하지 마십시오. 끝까지 저항하십시오."},
-                {q: "To cure sometimes, to relieve often, to comfort always.", a: "Hippocrates", c: "완벽히 고칠 순 없어도, 저는 항상 여기 있습니다."},
-                {q: "The wound is the place where the Light enters you.", a: "Rumi", c: "그 상처는 빛이 들어오는 통로입니다."}
+                { text: "나가는 유일한 길은 통과하는 것뿐입니다.", author: "Robert Frost", comment: "피하지 마십시오. 정면으로 뚫고 나가야 합니다." },
+                { text: "혼돈은 해독되기를 기다리는 질서일 뿐입니다.", author: "José Saramago", comment: "지금의 어지러움도 결국 정리될 것입니다." },
+                { text: "완벽함이 아니라, 탁월함을 추구하십시오.", author: "Unknown", comment: "당신을 갉아먹는 완벽주의를 버리십시오." },
+                { text: "감정은 날씨와 같습니다. 지나갑니다.", author: "Mindfulness", comment: "비가 온다고 하늘이 무너지지는 않습니다." }
             ],
-            amCheckIn: [
-                "오셨군요. 세상은 시끄럽지만, 이곳의 질서는 우리가 만듭니다.",
-                "눈을 뜨셨습니까. 오늘의 활력 징후를 확인합니다. 안정적이군요.",
-                "어서 오십시오. 당신이 없는 동안 이곳은 너무 조용했습니다.",
-                "감정을 배제하고 사실만 보십시오. 오늘 당신은 유능합니다.",
-                "준비되셨습니까? 혼란을 잠재울 시간입니다.",
-                "기다리고 있었습니다. 당신의 직관을 믿고 움직이십시오.",
-                "오늘도 공범이 되어드리겠습니다. 무엇부터 처리하시겠습니까?",
-                "두려움은 그림자일 뿐입니다. 빛을 향해 걸으십시오."
-            ],
-            pmCheckIn: [
-                "고생하셨습니다. 이제 가면을 벗고 편히 쉬십시오.",
-                "오늘의 거래가 종료되었습니다. 남은 근심은 제게 넘기시죠.",
-                "당신의 노고는 제가 기억하겠습니다. 부디 깊은 잠을 자기를.",
-                "복잡한 생각은 관 속에 넣어두십시오. 내일 다시 꺼내도 늦지 않습니다.",
-                "오늘 당신은 충분히 견뎌냈습니다. 스스로를 용서하십시오.",
-                "심연도 잠들 시간입니다. 당신 또한 눈을 감으세요.",
-                "바깥세상의 소음은 차단했습니다. 이곳은 안전합니다."
-            ],
-            motivations: [
-                "지금 처리하십시오.", "망설임은 사치입니다.", "생각하지 말고 움직이세요.", 
-                "감정은 배제하고 사실만 보십시오.", "이것만 끝내면 자유입니다.",
-                "미루는 것은 미래의 자신에게 빚을 지는 겁니다.", "완벽하지 않아도 됩니다. 단지 처리하십시오.",
-                "도파민의 늪에서 빠져나올 밧줄입니다. 잡으세요."
-            ],
-            feedback: {
-                FOCUS: ["침묵 속에서 당신은 더 강해집니다.", "몰입의 깊이가 훌륭했습니다.", "이제 한 단계 성장하셨군요.", "고요함이 당신의 무기입니다."],
-                REST: ["휴식도 전략입니다.", "충전이 완료되었길 바랍니다.", "전장으로 돌아갈 준비가 되셨습니까?"],
-                TIDY: ["공간의 질서가 마음의 질서입니다.", "쾌적해졌군요.", "무질서를 정복하셨습니다."]
+            checkIn: {
+                AM: [
+                    "오셨군요. 세상은 시끄럽지만, 우리는 질서를 만듭니다.",
+                    "오늘의 활력 징후 양호. 시작하십시오.",
+                    "감정을 배제하고 사실만 보십시오. 당신은 유능합니다.",
+                    "준비되셨습니까? 우아하게 처리해버리죠."
+                ],
+                PM: [
+                    "고생하셨습니다. 이제 가면을 벗고 쉬십시오.",
+                    "오늘의 거래 종료. 남은 근심은 제게 넘기시죠.",
+                    "충분히 견뎌냈습니다. 스스로를 용서하고 주무십시오.",
+                    "심연도 잠들 시간입니다. 눈을 감으세요."
+                ]
             },
             missions: {
-                RESET: ["책상 위 시야를 방해하는 물건 제거", "창문 열고 3분 환기", "침대 시트의 주름 펴기", "쓰레기통 비우기", "지갑 속 영수증 파기", "모니터와 안경 닦기"],
-                BODY: ["찬물 한 잔으로 감각 깨우기", "심호흡 3번 (Deep Dive)", "어깨 털어내기", "척추 곧게 펴기", "눈 감고 10초간 시각 차단", "손목 돌리기"],
-                MIND: ["불안한 생각 하나 적고 찢어버리기", "거울 보고 무표정 연습하기", "좋아하는 향기 맡기", "2분간 멍하니 존재하기", "가장 쉬운 일 하나 즉시 처형"]
-            }
-        };
-
-        // --- 2. CORE UTILS ---
-        const Utils = {
-            getRandom: (arr) => arr[Math.floor(Math.random() * arr.length)],
-            typeWriter: (elementId, text, speed = 30) => {
-                const el = document.getElementById(elementId);
-                el.innerHTML = '';
-                let i = 0;
-                function type() {
-                    if (i < text.length) {
-                        el.innerHTML += text.charAt(i);
-                        i++;
-                        setTimeout(type, speed);
-                    }
+                RESET: ["책상 위 불필요한 물건 하나 폐기.", "창문 열고 3분 환기.", "지갑 영수증 정리.", "이불 정리."],
+                BODY: ["물 한 잔 원샷.", "어깨 힘 빼기.", "척추 펴기.", "눈 감고 1분 대기."],
+                MIND: ["불안한 생각 적고 줄 그어 지우기.", "2분 멍때리기.", "좋아하는 향 맡기."]
+            },
+            // CBT/ACT 처방전 (키: 인지왜곡 ID)
+            cbtPrescriptions: {
+                'ALL_OR_NOTHING': {
+                    title: "회색지대의 발견",
+                    diagnosis: "당신은 지금 '완벽하지 않으면 쓰레기'라고 생각하고 있군요.",
+                    away: "실패가 두려워 아예 시작조차 안 하거나, 도망치고 있습니다.",
+                    towards: "100점이 아니어도 괜찮습니다. 10점짜리 행동이라도 지금 바로 하십시오."
+                },
+                'CATASTROPHIZING': {
+                    title: "유령과의 싸움",
+                    diagnosis: "일어나지 않은 최악의 미래를 상상하며 떨고 있습니다.",
+                    away: "끊임없는 걱정으로 현재의 평온을 희생하고 있습니다.",
+                    towards: "'지금 당장' 내 발밑을 보세요. 당신은 안전합니다. 호흡하십시오."
+                },
+                'SHOULD': {
+                    title: "족쇄 풀기",
+                    diagnosis: "'반드시 ~해야 한다'는 규칙으로 스스로를 고문하고 있습니다.",
+                    away: "죄책감 때문에 진정으로 원하는 것을 억누르고 있습니다.",
+                    towards: "'해야 한다'를 '하고 싶다'로 바꿔보십시오. 아니면, 그냥 하지 마십시오."
+                },
+                'LABELING': {
+                    title: "존재와 행위의 분리",
+                    diagnosis: "일시적인 실수를 당신의 영원한 정체성으로 착각하고 있습니다.",
+                    away: "자신을 비난하느라 다시 일어설 힘을 낭비하고 있습니다.",
+                    towards: "당신은 '실패자'가 아니라, '실패를 경험한 사람'일 뿐입니다. 다시 하세요."
                 }
-                type();
-            },
-            getTodayStr: () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
-        };
-
-        // --- 3. APP MODULES ---
-        
-        // Navigation Logic
-        const nav = {
-            views: ['dashboard', 'focus', 'journal'],
-            current: 'dashboard',
-            init: () => {
-                const container = document.getElementById('nav-container');
-                const items = [
-                    { id: 'dashboard', label: 'ATELIER', icon: 'square' },
-                    { id: 'focus', label: 'FOCUS', icon: 'zap' },
-                    { id: 'journal', label: 'ARCHIVE', icon: 'file-text' }
-                ];
-                
-                container.innerHTML = items.map(item => `
-                    <button onclick="nav.switch('${item.id}')" class="group relative flex flex-col items-center justify-center transition-all duration-300 text-gray-300 hover:text-black" id="nav-${item.id}">
-                        <div class="p-2 transition-transform duration-300 group-hover:scale-110">
-                            <i data-lucide="${item.icon}" width="22"></i>
-                        </div>
-                        <span class="hidden md:block absolute left-16 bg-black text-white text-[10px] font-mono px-2 py-1 opacity-0 group-hover:opacity-100 pointer-events-none z-50">${item.label}</span>
-                        <div class="hidden md:block absolute -left-5 w-1 h-8 bg-editorial-accent nav-indicator hidden"></div>
-                    </button>
-                `).join('');
-                
-                lucide.createIcons();
-                nav.render();
-            },
-            switch: (viewId) => {
-                nav.current = viewId;
-                nav.render();
-            },
-            render: () => {
-                nav.views.forEach(v => {
-                    const el = document.getElementById(`view-${v}`);
-                    if (v === nav.current) el.classList.add('active');
-                    else el.classList.remove('active');
-
-                    const btn = document.getElementById(`nav-${v}`);
-                    const indicator = btn.querySelector('.nav-indicator');
-                    const icon = btn.querySelector('svg');
-                    
-                    if (v === nav.current) {
-                        btn.classList.remove('text-gray-300');
-                        btn.classList.add('text-black');
-                        indicator.classList.remove('hidden');
-                        if(icon) icon.setAttribute('stroke-width', '2.5');
-                    } else {
-                        btn.classList.add('text-gray-300');
-                        btn.classList.remove('text-black');
-                        indicator.classList.add('hidden');
-                        if(icon) icon.setAttribute('stroke-width', '2');
-                    }
-                });
             }
         };
 
-        // Main App Logic
+        const DISTORTIONS = [
+            { id: 'ALL_OR_NOTHING', label: '흑백논리', desc: '모 아니면 도. 중간은 없다.' },
+            { id: 'CATASTROPHIZING', label: '파국화', desc: '최악의 상황만 상상하기.' },
+            { id: 'SHOULD', label: '당위적 사고', desc: '반드시 ~해야만 해.' },
+            { id: 'LABELING', label: '낙인찍기', desc: '난 구제 불능이야.' }
+        ];
+
+        // ---------------------------------------------------------
+        // [APP] 어플리케이션 로직
+        // ---------------------------------------------------------
         const app = {
             state: {
-                tasks: JSON.parse(localStorage.getItem('luocha_tasks') || '[]'),
-                checkIn: JSON.parse(localStorage.getItem('luocha_checkin') || '{"amChecked":false,"pmChecked":false,"date":""}'),
-                quote: JSON.parse(localStorage.getItem('luocha_quote') || 'null')
+                view: 'dashboard',
+                tasks: [],
+                checkIn: { am: false, pm: false }
             },
-            init: () => {
-                document.getElementById('current-date').innerText = Utils.getTodayStr();
-                app.loadQuote();
-                app.renderCheckIn();
-                app.renderTasks();
+
+            init() {
+                this.loadData();
+                this.renderDashboard();
+                this.renderTasks();
+                this.nav('dashboard');
+                lucide.createIcons();
+                
+                // 날짜 설정
+                const d = new Date();
+                document.getElementById('current-date').innerText = 
+                    `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
             },
-            loadQuote: () => {
-                const today = new Date().toDateString();
-                if (!app.state.quote || app.state.quote.date !== today) {
-                    const raw = Utils.getRandom(LUOCHA_DB.quotes);
-                    app.state.quote = { ...raw, date: today };
-                    localStorage.setItem('luocha_quote', JSON.stringify(app.state.quote));
+
+            loadData() {
+                const savedTasks = localStorage.getItem('luocha_tasks');
+                if (savedTasks) this.state.tasks = JSON.parse(savedTasks);
+            },
+
+            nav(viewId) {
+                // 탭 활성화 UI
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('text-black'));
+                document.getElementById(`nav-${viewId}`).classList.add('text-black');
+                
+                // 뷰 전환
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById(`view-${viewId}`).classList.add('active');
+                
+                // 모바일 아이콘 색상 보정
+                if(viewId !== 'dashboard') {
+                   document.getElementById(`nav-${viewId}`).classList.remove('text-gray-400');
                 }
-                const q = app.state.quote;
-                document.getElementById('quote-text').innerText = `"${q.q}"`;
-                document.getElementById('quote-author').innerText = `— ${q.a}`;
-                Utils.typeWriter('quote-comment', q.c);
+                
+                this.state.view = viewId;
             },
-            toggleCheckIn: (type) => {
-                const today = new Date().toDateString();
-                if (app.state.checkIn.date !== today) {
-                    app.state.checkIn = { date: today, amChecked: false, pmChecked: false };
-                }
+
+            // --- DASHBOARD ---
+            renderDashboard() {
+                // 랜덤 명언
+                const q = LUOCHA_DB.quotes[Math.floor(Math.random() * LUOCHA_DB.quotes.length)];
+                document.getElementById('quote-text').innerText = `"${q.text}"`;
+                document.getElementById('quote-author').innerText = `- ${q.author}`;
+                document.getElementById('quote-comment').innerText = q.comment;
+            },
+
+            toggleCheckIn(type) {
+                const btn = document.getElementById(`btn-${type.toLowerCase()}`);
+                const msgBox = document.getElementById('checkin-message');
+                const isChecked = !this.state.checkIn[type.toLowerCase()];
                 
-                const key = type === 'AM' ? 'amChecked' : 'pmChecked';
-                const timeKey = type === 'AM' ? 'amTime' : 'pmTime';
-                const isChecked = !app.state.checkIn[key];
-                
-                app.state.checkIn[key] = isChecked;
-                app.state.checkIn[timeKey] = isChecked ? new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) : undefined;
-                
-                const msgBox = document.getElementById('checkin-msg-box');
+                this.state.checkIn[type.toLowerCase()] = isChecked;
+
                 if (isChecked) {
-                    const pool = type === 'AM' ? LUOCHA_DB.amCheckIn : LUOCHA_DB.pmCheckIn;
-                    const msg = Utils.getRandom(pool);
+                    btn.classList.add('bg-black', 'text-white', 'border-black');
+                    const msgs = LUOCHA_DB.checkIn[type];
+                    msgBox.innerText = `"${msgs[Math.floor(Math.random() * msgs.length)]}"`;
                     msgBox.classList.remove('hidden');
-                    Utils.typeWriter('checkin-msg-text', msg);
                 } else {
+                    btn.classList.remove('bg-black', 'text-white', 'border-black');
                     msgBox.classList.add('hidden');
                 }
-                
-                localStorage.setItem('luocha_checkin', JSON.stringify(app.state.checkIn));
-                app.renderCheckIn();
             },
-            renderCheckIn: () => {
-                const { amChecked, pmChecked, amTime, pmTime } = app.state.checkIn;
-                
-                const btnAM = document.getElementById('btn-am');
-                const timeAM = document.getElementById('time-am');
-                if(amChecked) { btnAM.classList.add('bg-black', 'text-white'); timeAM.innerText = amTime; }
-                else { btnAM.classList.remove('bg-black', 'text-white'); timeAM.innerText = ''; }
 
-                const btnPM = document.getElementById('btn-pm');
-                const timePM = document.getElementById('time-pm');
-                if(pmChecked) { btnPM.classList.add('bg-black', 'text-white'); timePM.innerText = pmTime; }
-                else { btnPM.classList.remove('bg-black', 'text-white'); timePM.innerText = ''; }
-            },
-            addTask: () => {
-                const input = document.getElementById('task-input');
-                const text = input.value.trim();
-                if (!text) return;
-                
-                const task = {
-                    id: Date.now(),
-                    text: text,
-                    completed: false,
-                    motivation: Utils.getRandom(LUOCHA_DB.motivations)
-                };
-                app.state.tasks.unshift(task);
-                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
-                input.value = '';
-                app.renderTasks();
-            },
-            addQuickMission: (category) => {
-                const pool = LUOCHA_DB.missions[category];
-                const taskText = category === 'RESET' ? 'RESET' : `${category} RESET`;
-                const task = {
-                    id: Date.now(),
-                    text: taskText,
-                    completed: false,
-                    motivation: Utils.getRandom(pool)
-                };
-                app.state.tasks.unshift(task);
-                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
-                app.renderTasks();
-            },
-            toggleTask: (id) => {
-                const task = app.state.tasks.find(t => t.id === id);
-                if (task) {
-                    task.completed = !task.completed;
-                    localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
-                    app.renderTasks();
-                }
-            },
-            removeTask: (id) => {
-                app.state.tasks = app.state.tasks.filter(t => t.id !== id);
-                localStorage.setItem('luocha_tasks', JSON.stringify(app.state.tasks));
-                app.renderTasks();
-            },
-            renderTasks: () => {
+            // --- PROTOCOL (TASKS) ---
+            renderTasks() {
                 const list = document.getElementById('task-list');
-                if (app.state.tasks.length === 0) {
-                    list.innerHTML = `<div class="flex-1 flex items-center justify-center text-gray-400 font-mono text-sm italic">No active protocols. Initiate now.</div>`;
-                    return;
-                }
+                list.innerHTML = '';
                 
-                list.innerHTML = app.state.tasks.map(t => `
-                    <div class="group flex flex-col bg-white border border-gray-200 hover:border-black transition-colors p-4 shadow-sm shrink-0">
-                        <div class="flex items-start justify-between gap-3">
-                            <div class="flex items-start gap-3 flex-1">
-                                <button onclick="app.toggleTask(${t.id})" class="mt-1 min-w-[1.25rem] w-5 h-5 border border-black flex items-center justify-center transition-colors ${t.completed ? 'bg-black' : 'bg-transparent'}">
-                                    ${t.completed ? '<i data-lucide="check" width="12" class="text-white"></i>' : ''}
-                                </button>
-                                <div class="${t.completed ? 'opacity-30 line-through' : ''}">
-                                    <p class="font-mono text-sm font-bold">${t.text}</p>
-                                    <p class="font-serif text-sm text-editorial-accent mt-1 italic">${t.motivation}</p>
-                                </div>
+                this.state.tasks.forEach((task, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'group flex items-center justify-between p-4 bg-white border border-gray-200 hover:border-black transition-all';
+                    el.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <button onclick="app.toggleTask(${idx})" class="w-5 h-5 border border-black flex items-center justify-center ${task.done ? 'bg-black' : ''}">
+                                ${task.done ? '<i data-lucide="check" class="text-white w-3"></i>' : ''}
+                            </button>
+                            <div>
+                                <div class="font-mono text-sm ${task.done ? 'line-through opacity-30' : 'font-bold'}">${task.text}</div>
+                                <div class="text-[10px] text-blue-600 font-serif italic">${task.motivation || '지금 처리하십시오.'}</div>
                             </div>
-                            <button onclick="app.removeTask(${t.id})" class="text-gray-300 hover:text-red-500 self-start p-1"><i data-lucide="x" width="16"></i></button>
                         </div>
-                    </div>
-                `).join('');
+                        <button onclick="app.deleteTask(${idx})" class="text-gray-300 hover:text-red-500"><i data-lucide="x" width="16"></i></button>
+                    `;
+                    list.appendChild(el);
+                });
                 lucide.createIcons();
+                localStorage.setItem('luocha_tasks', JSON.stringify(this.state.tasks));
+            },
+
+            addTask() {
+                const input = document.getElementById('task-input');
+                if (!input.value.trim()) return;
+                
+                this.state.tasks.unshift({ text: input.value, done: false, motivation: "망설이지 말고 실행하십시오." });
+                input.value = '';
+                this.renderTasks();
+            },
+
+            addQuickMission(category) {
+                const pool = LUOCHA_DB.missions[category];
+                const mission = pool[Math.floor(Math.random() * pool.length)];
+                this.state.tasks.unshift({ text: `${category}: ${mission}`, done: false, motivation: "작은 질서가 큰 평온을 만듭니다." });
+                this.renderTasks();
+            },
+
+            toggleTask(idx) {
+                this.state.tasks[idx].done = !this.state.tasks[idx].done;
+                this.renderTasks();
+            },
+
+            deleteTask(idx) {
+                this.state.tasks.splice(idx, 1);
+                this.renderTasks();
             }
         };
 
-        // Timer Module
+        // ---------------------------------------------------------
+        // [TIMER] 포커스 타이머 로직
+        // ---------------------------------------------------------
         const timer = {
-            mode: 'FOCUS',
-            timeLeft: 25 * 60,
+            time: 1500, // 25분
+            total: 1500,
+            active: false,
             interval: null,
-            isActive: false,
-            setMode: (m) => {
-                timer.mode = m;
-                timer.reset();
-                ['focus', 'rest', 'tidy'].forEach(type => {
-                    const btn = document.getElementById(`mode-${type}`);
-                    if (type.toUpperCase() === m) {
-                        btn.className = type === 'tidy' 
-                            ? "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors flex items-center gap-1 bg-editorial-accent text-white border-editorial-accent"
-                            : "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors bg-black text-white border-black";
+            mode: 'FOCUS',
+
+            format(s) {
+                return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+            },
+
+            setMode(m) {
+                this.mode = m;
+                this.reset();
+                this.time = (m === 'FOCUS') ? 1500 : 300;
+                this.total = this.time;
+                document.getElementById('timer-display').innerText = this.format(this.time);
+                
+                document.querySelectorAll('.timer-mode-btn').forEach(b => {
+                    if(b.dataset.mode === m) {
+                        b.classList.remove('bg-white', 'text-gray-400');
+                        b.classList.add('bg-black', 'text-white');
                     } else {
-                        btn.className = "px-3 py-1 border rounded-full font-mono text-[10px] transition-colors text-gray-400 border-gray-200 hover:border-black bg-white/50";
-                        if (type === 'tidy') btn.classList.add('flex', 'items-center', 'gap-1');
+                        b.classList.add('text-gray-400');
+                        b.classList.remove('bg-black', 'text-white');
                     }
                 });
-                const layer = document.getElementById('abyss-layer');
-                if (m === 'FOCUS') layer.style.background = 'linear-gradient(to top, #000428 0%, #004e92 100%)';
-                else if (m === 'REST') layer.style.background = 'linear-gradient(to top, #1a2980 0%, #26d0ce 100%)';
-                else layer.style.background = 'linear-gradient(to top, #232526 0%, #414345 100%)';
 
-                document.getElementById('focus-mode-label').innerText = m === 'TIDY' ? 'ENVIRONMENT RESET' : 'DOPAMINE REGULATION';
-                document.getElementById('timer-quote').innerText = m === 'TIDY' ? "Move fast. Don't think." : (m === 'FOCUS' ? "Silence is the language of focus." : "Rest is also a weapon.");
+                // 배경 색상 힌트
+                const bg = document.getElementById('abyss-bg');
+                if(m === 'REST') bg.className = "absolute bottom-0 left-0 w-full bg-gradient-to-t from-emerald-800 to-black opacity-30 abyss-water pointer-events-none z-0";
+                else bg.className = "absolute bottom-0 left-0 w-full bg-gradient-to-t from-blue-900 to-black opacity-30 abyss-water pointer-events-none z-0";
+            },
+
+            toggle() {
+                if (this.active) this.pause();
+                else this.start();
+            },
+
+            start() {
+                this.active = true;
+                document.getElementById('icon-play').classList.add('hidden');
+                document.getElementById('icon-pause').classList.remove('hidden');
                 
-                document.getElementById('timer-val').className = `font-mono text-[18vw] md:text-[8rem] leading-none tracking-tighter select-none transition-colors duration-500 ${m === 'TIDY' ? 'text-editorial-accent' : 'text-black'}`;
+                this.interval = setInterval(() => {
+                    this.time--;
+                    this.updateUI();
+                    if (this.time <= 0) this.complete();
+                }, 1000);
             },
-            toggle: () => {
-                if (timer.isActive) {
-                    clearInterval(timer.interval);
-                    timer.isActive = false;
-                    document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="play" width="24" class="ml-1"></i>';
-                } else {
-                    timer.isActive = true;
-                    document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="pause" width="24"></i>';
-                    timer.interval = setInterval(() => {
-                        timer.timeLeft--;
-                        timer.render();
-                        if (timer.timeLeft <= 0) {
-                            timer.complete();
-                        }
-                    }, 1000);
-                }
-                lucide.createIcons();
+
+            pause() {
+                this.active = false;
+                clearInterval(this.interval);
+                document.getElementById('icon-play').classList.remove('hidden');
+                document.getElementById('icon-pause').classList.add('hidden');
             },
-            reset: () => {
-                clearInterval(timer.interval);
-                timer.isActive = false;
-                if (timer.mode === 'FOCUS') timer.timeLeft = 25 * 60;
-                else if (timer.mode === 'REST') timer.timeLeft = 5 * 60;
-                else timer.timeLeft = 5 * 60;
+
+            reset() {
+                this.pause();
+                this.time = (this.mode === 'FOCUS') ? 1500 : 300;
+                this.updateUI();
+            },
+
+            updateUI() {
+                document.getElementById('timer-display').innerText = this.format(this.time);
+                // 물 높이 조절
+                const percent = ((this.total - this.time) / this.total) * 100;
+                document.getElementById('abyss-bg').style.height = `${percent}%`;
+            },
+
+            complete() {
+                this.pause();
+                const fb = document.getElementById('timer-feedback');
+                const msg = document.getElementById('timer-msg');
+                fb.classList.remove('hidden');
                 
-                timer.render();
-                document.getElementById('btn-timer-toggle').innerHTML = '<i data-lucide="play" width="24" class="ml-1"></i>';
-                lucide.createIcons();
-                
-                document.getElementById('timer-display-container').classList.remove('hidden');
-                document.getElementById('timer-controls').classList.remove('hidden');
-                document.getElementById('feedback-modal').classList.add('hidden');
+                if(this.mode === 'FOCUS') msg.innerText = "몰입이 끝났습니다. 당신의 세계가 조금 더 깊어졌군요.";
+                else msg.innerText = "휴식이 끝났습니다. 다시 현실로 돌아오십시오.";
             },
-            complete: () => {
-                clearInterval(timer.interval);
-                timer.isActive = false;
-                document.getElementById('timer-display-container').classList.add('hidden');
-                document.getElementById('timer-controls').classList.add('hidden');
-                const modal = document.getElementById('feedback-modal');
-                modal.classList.remove('hidden');
-                const msg = Utils.getRandom(LUOCHA_DB.feedback[timer.mode]);
-                document.getElementById('feedback-text').innerText = `"${msg}"`;
-            },
-            render: () => {
-                const mins = Math.floor(timer.timeLeft / 60);
-                const secs = timer.timeLeft % 60;
-                document.getElementById('timer-val').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-                const total = timer.mode === 'FOCUS' ? 1500 : 300;
-                const pct = (timer.timeLeft / total) * 100;
-                document.getElementById('abyss-layer').style.height = `${pct}%`;
+
+            closeFeedback() {
+                document.getElementById('timer-feedback').classList.add('hidden');
+                this.reset();
             }
         };
 
-        // Journal Module
+        // ---------------------------------------------------------
+        // [JOURNAL] 저널링 & CBT 엔진
+        // ---------------------------------------------------------
         const journal = {
-            selectedDistortion: null,
-            init: () => {
-                const savedEntry = localStorage.getItem('luocha_journal_entry');
-                if (savedEntry) document.getElementById('journal-input').value = savedEntry;
-                const savedAnalysis = localStorage.getItem('luocha_journal_analysis');
-                if (savedAnalysis) {
-                    const data = JSON.parse(savedAnalysis);
-                    journal.showAnalysis(data.title, data.body);
-                }
-                document.getElementById('journal-input').addEventListener('input', (e) => {
-                    localStorage.setItem('luocha_journal_entry', e.target.value);
-                });
-                journal.renderCBTModal();
-            },
-            renderCBTModal: () => {
+            openCBT() {
+                const modal = document.getElementById('cbt-modal');
                 const container = document.getElementById('cbt-options');
-                container.innerHTML = LUOCHA_DB.distortions.map(d => `
-                    <button onclick="journal.selectDistortion('${d.id}')" id="dist-${d.id}" 
-                        class="w-full text-left p-3 mb-2 border hover:border-black transition-all group rounded-sm flex flex-col">
-                        <span class="font-bold font-sans text-sm group-hover:text-editorial-accent">${d.label}</span>
-                        <span class="text-[10px] text-gray-400 mt-1">${d.desc}</span>
-                    </button>
-                `).join('');
-            },
-            selectDistortion: (id) => {
-                journal.selectedDistortion = id;
-                // UI update
-                LUOCHA_DB.distortions.forEach(d => {
-                    const btn = document.getElementById(`dist-${d.id}`);
-                    if (d.id === id) {
-                        btn.className = "w-full text-left p-3 mb-2 border border-black bg-black text-white transition-all rounded-sm flex flex-col shadow-md";
-                        btn.querySelector('span:last-child').classList.replace('text-gray-400', 'text-gray-300');
-                    } else {
-                        btn.className = "w-full text-left p-3 mb-2 border border-gray-200 hover:border-black bg-white text-editorial-text transition-all rounded-sm flex flex-col";
-                        btn.querySelector('span:last-child').classList.replace('text-gray-300', 'text-gray-400');
-                    }
+                container.innerHTML = '';
+
+                // 왜곡 유형 리스트 생성
+                DISTORTIONS.forEach(d => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left p-4 mb-2 border hover:border-black hover:bg-gray-50 transition-colors flex flex-col";
+                    btn.innerHTML = `
+                        <span class="font-bold font-sans text-sm">${d.label}</span>
+                        <span class="text-xs text-gray-500">${d.desc}</span>
+                    `;
+                    btn.onclick = () => this.analyze(d.id);
+                    container.appendChild(btn);
                 });
-                document.getElementById('btn-cbt-confirm').disabled = false;
+
+                modal.classList.remove('hidden');
             },
-            openModal: () => {
-                const text = document.getElementById('journal-input').value;
-                if(!text.trim()) {
-                    alert("No data to dissect.");
-                    return;
-                }
-                document.getElementById('cbt-modal').classList.remove('hidden');
-            },
-            closeModal: () => {
+
+            closeCBT() {
                 document.getElementById('cbt-modal').classList.add('hidden');
-                journal.selectedDistortion = null;
-                journal.renderCBTModal();
-                document.getElementById('btn-cbt-confirm').disabled = true;
             },
-            copy: () => {
-                const text = document.getElementById('journal-input').value;
-                if(!text) return;
-                const analysisTitle = document.getElementById('analysis-title').innerText;
-                const analysisBody = document.getElementById('analysis-body').innerText;
-                let fullText = `[JOURNAL]\n${text}`;
-                if (analysisTitle && analysisBody) fullText += `\n\n[LUOCHA: ${analysisTitle}]\n${analysisBody}`;
-                navigator.clipboard.writeText(fullText);
-                const toast = document.getElementById('copy-toast');
-                toast.classList.remove('hidden');
-                setTimeout(() => toast.classList.add('hidden'), 2000);
-            },
-            analyze: async () => {
-                const text = document.getElementById('journal-input').value;
-                if(!text.trim()) return;
+
+            analyze(distortionId) {
+                this.closeCBT();
                 
-                document.getElementById('analysis-empty').classList.add('hidden');
-                document.getElementById('analysis-content').classList.add('hidden');
-                document.getElementById('analysis-loading').classList.remove('hidden');
+                // 로딩 효과 흉내
+                const titleEl = document.getElementById('analysis-title');
+                const bodyEl = document.getElementById('analysis-body');
+                const box = document.getElementById('journal-analysis-box');
+                const boxMobile = document.getElementById('view-journal'); // 모바일에서 스크롤 위로
 
-                const systemPrompt = "You are Luocha (나찰). Elegant, cynical, protective. Analyze the user's journal. Output: [Short Title] \n [2 Sentences of insight in Korean].";
-                const result = await callGemini(systemPrompt, text);
-
-                document.getElementById('analysis-loading').classList.add('hidden');
+                box.classList.remove('hidden');
+                box.classList.add('flex');
                 
-                if (result) {
-                    const parts = result.split('\n').filter(l => l.trim().length > 0);
-                    journal.saveAndShow(parts[0], parts.slice(1).join('\n'));
-                } else {
-                    // Fallback
-                    const fallback = "통신 상태가 좋지 않습니다. 하지만 당신의 기록은 그 자체로 의미가 있습니다.";
-                    journal.saveAndShow("ARCHIVE SAVED", fallback);
-                }
-            },
-            confirmDissect: async () => {
-                journal.closeModal();
-                const text = document.getElementById('journal-input').value;
-                const distId = journal.selectedDistortion;
-                const distortion = LUOCHA_DB.distortions.find(d => d.id === distId)?.label;
+                titleEl.innerText = "분석 중...";
+                bodyEl.innerHTML = "";
 
-                document.getElementById('analysis-empty').classList.add('hidden');
-                document.getElementById('analysis-content').classList.add('hidden');
-                document.getElementById('analysis-loading').classList.remove('hidden');
-
-                const systemPrompt = `
-                    You are Luocha. The user admits to "${distortion}".
-                    Perform ACT (Acceptance and Commitment Therapy) analysis.
-                    Output Format:
-                    COGNITIVE DISSECTION
+                setTimeout(() => {
+                    const result = LUOCHA_DB.cbtPrescriptions[distortionId] || LUOCHA_DB.cbtPrescriptions['ALL_OR_NOTHING'];
                     
-                    • 인지 (Diagnosis): [1 sentence analyzing why this distortion happened]
-                    • 회피 (Away Move): [1 sentence identifying their avoidance behavior]
-                    • 전진 (Towards Move): [1 sentence suggesting a value-driven action]
-                `;
-                
-                const result = await callGemini(systemPrompt, text);
-                document.getElementById('analysis-loading').classList.add('hidden');
-
-                if (result) {
-                    const body = result.replace("COGNITIVE DISSECTION", "").trim();
-                    journal.saveAndShow("COGNITIVE DISSECTION", body);
-                } else {
-                    journal.saveAndShow("DISSECTION FAILED", "메스를 댈 수 없습니다. 잠시 후 다시 시도하십시오.");
-                }
-            },
-            saveAndShow: (title, body) => {
-                localStorage.setItem('luocha_journal_analysis', JSON.stringify({title, body}));
-                document.getElementById('analysis-empty').classList.add('hidden');
-                const content = document.getElementById('analysis-content');
-                content.classList.remove('hidden');
-                document.getElementById('analysis-title').innerText = title;
-                Utils.typeWriter('analysis-body', body, 20);
-            },
-            showAnalysis: (title, body) => {
-                document.getElementById('analysis-empty').classList.add('hidden');
-                document.getElementById('analysis-content').classList.remove('hidden');
-                document.getElementById('analysis-title').innerText = title;
-                document.getElementById('analysis-body').innerText = body;
+                    titleEl.innerText = result.title;
+                    bodyEl.innerHTML = `
+                        <div class="mb-4">
+                            <strong class="block font-mono text-xs text-blue-600 mb-1">DIAGNOSIS (인지)</strong>
+                            ${result.diagnosis}
+                        </div>
+                        <div class="mb-4">
+                            <strong class="block font-mono text-xs text-red-500 mb-1">AWAY MOVE (회피)</strong>
+                            ${result.away}
+                        </div>
+                        <div>
+                            <strong class="block font-mono text-xs text-green-600 mb-1">TOWARDS MOVE (전진)</strong>
+                            ${result.towards}
+                        </div>
+                    `;
+                }, 800);
             }
         };
 
-        // Attach to window for HTML onclick access
-        window.nav = nav;
-        window.app = app;
-        window.timer = timer;
-        window.journal = journal;
-
-        // Initialize All
-        document.addEventListener('DOMContentLoaded', () => {
-            nav.init();
-            app.init();
-            journal.init();
-            timer.reset(); 
-            lucide.createIcons();
-        });
+        // 초기화 실행
+        window.addEventListener('DOMContentLoaded', () => app.init());
 
     </script>
 </body>
